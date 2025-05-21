@@ -1,4 +1,6 @@
 "use client"
+
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 import Script from "next/script"
 
 export default function Analytics() {
@@ -15,7 +17,8 @@ export default function Analytics() {
         `}
       </Script>
 
-      {/* Vercel Analytics - automatically included when deploying to Vercel */}
+      {/* Vercel Analytics - explicitly included */}
+      <VercelAnalytics />
     </>
   )
 }

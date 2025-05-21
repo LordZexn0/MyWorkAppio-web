@@ -12,27 +12,61 @@ interface HeroSectionProps {
 export default function HeroSection({ onCTAClick }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = 0.7 // Slow down the video slightly for better effect
+
+      // Force video reload on client side
+      const video = videoRef.current
+      video.load()
+
+      // Add event listeners for debugging
+      video.addEventListener("error", (e) => {
+        console.error("Video error:", e)
+        setVideoError(true)
+      })
+
+      video.addEventListener("loadeddata", () => {
+        console.log("Video loaded successfully")
+        setVideoLoaded(true)
+      })
+
+      // Try to play the video
+      video.play().catch((err) => {
+        console.error("Error playing video:", err)
+        setVideoError(true)
+      })
+    }
+
+    return () => {
+      if (videoRef.current) {
+        const video = videoRef.current
+        video.removeEventListener("error", () => {})
+        video.removeEventListener("loadeddata", () => {})
+      }
     }
   }, [])
 
   return (
     <div className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-white">
       {/* Video Background with reduced opacity overlay */}
-      <div className="absolute inset-0 w-full h-full bg-white/30 z-10"></div>
+      <div className="absolute inset-0 w-full h-full bg-white/40 z-10"></div>
+
+      {/* Fallback image in case video fails */}
+      {videoError && <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-blue-50 to-orange-50"></div>}
+
       <video
         ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-          videoLoaded ? "opacity-100" : "opacity-0"
-        }`}
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100"
         onLoadedData={() => setVideoLoaded(true)}
+        onError={() => setVideoError(true)}
       >
         <source src="/videos/websiteback.mp4" type="video/mp4" />
         Your browser does not support the video tag.
@@ -46,7 +80,7 @@ export default function HeroSection({ onCTAClick }: HeroSectionProps) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-center"
         >
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 font-heading text-[#FF6B35]">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 font-heading text-[#0F4C81]">
             <span className="block">MyWorkApp.io</span>
           </h1>
           <p className="text-xl md:text-2xl lg:text-3xl text-[#FFCF40] font-light max-w-3xl mx-auto">

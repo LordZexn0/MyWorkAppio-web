@@ -55,23 +55,25 @@ export default function ContactForm() {
     try {
       // Prepare form data with selected services
       if (formRef.current) {
-        const formData = new FormData(formRef.current)
-
-        // Add selected services as a comma-separated string
-        if (selectedServices.length > 0) {
-          formData.set("services", selectedServices.join(", "))
-        } else {
-          formData.set("services", "No services selected")
+        // Create template parameters object - use field names that match your EmailJS template variables
+        const templateParams = {
+          from_name: formRef.current.name.value,
+          from_email: formRef.current.email.value,
+          phone_number: formRef.current.phone.value,
+          company: formRef.current.company.value || "Not provided",
+          selected_services: selectedServices.length > 0 ? selectedServices.join(", ") : "No services selected",
+          message: formRef.current.message.value,
+          // Add these fields explicitly to ensure they appear in the email
+          name: formRef.current.name.value,
+          email: formRef.current.email.value,
+          phone: formRef.current.phone.value,
+          services: selectedServices.length > 0 ? selectedServices.join(", ") : "No services selected",
         }
 
-        // Convert FormData to a plain object that emailjs can use
-        const formObject: Record<string, any> = {}
-        formData.forEach((value, key) => {
-          formObject[key] = value
-        })
+        console.log("Sending form data:", templateParams)
 
-        // Send email using EmailJS
-        await emailjs.send("service_j44x4lk", "template_6rmkeos", formObject, "LZZ5ipyB4DIFG4QkQ")
+        // Send email using EmailJS with explicit template parameters
+        await emailjs.send("service_j44x4lk", "template_6rmkeos", templateParams, "LZZ5ipyB4DIFG4QkQ")
       }
 
       setIsSubmitted(true)
