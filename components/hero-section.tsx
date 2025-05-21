@@ -12,7 +12,6 @@ interface HeroSectionProps {
 export default function HeroSection({ onCTAClick }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
-  const [videoError, setVideoError] = useState(false)
 
   useEffect(() => {
     if (videoRef.current) {
