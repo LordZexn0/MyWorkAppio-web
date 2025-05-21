@@ -1,20 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Montserrat, Raleway } from "next/font/google"
 import "./globals.css"
-
-// Define fonts
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  display: "swap",
-})
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  variable: "--font-raleway",
-  display: "swap",
-})
 
 export const metadata: Metadata = {
   title: "MyWorkApp.io - Modern Solutions For Tomorrow's Challenges",
@@ -40,11 +26,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`scroll-smooth ${montserrat.variable} ${raleway.variable}`}>
+    <html lang="en" className="scroll-smooth">
       <head>
         <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="font-sans">{children}</body>
     </html>

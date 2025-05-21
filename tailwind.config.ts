@@ -9,10 +9,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["var(--font-montserrat)", "system-ui", "sans-serif"],
-        heading: ["var(--font-raleway)", "system-ui", "sans-serif"],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
