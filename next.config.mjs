@@ -8,6 +8,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Ensure static assets are properly handled
   images: {
     unoptimized: true,
   },
@@ -15,23 +16,22 @@ const nextConfig = {
   experimental: {
     largePageDataBytes: 128 * 100000, // Increase the limit for large page data
   },
-  // Configure headers for video files
-  async headers() {
-    return [
-      {
-        source: '/videos/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-          {
-            key: 'Content-Type',
-            value: 'video/mp4',
-          },
-        ],
+  // Configure asset prefix for production
+  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '',
+  // Make sure all assets are included in the build
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.(mp4|webm)$/,
+      use: {
+        loader: 'file-loader',
+        options: {
+          publicPath: '/_next/static/media/',
+          outputPath: 'static/media/',
+          name: '[name].[hash].[ext]',
+        },
       },
-    ]
+    });
+    return config;
   },
 }
 

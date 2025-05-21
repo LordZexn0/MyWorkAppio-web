@@ -36,10 +36,6 @@ export default function Home() {
       document.body.style.overflow = "auto"
     }
 
-    // Preload video
-    const videoPreload = new Image()
-    videoPreload.src = "/videos/websiteback.mp4"
-
     return () => {
       document.body.style.overflow = "auto"
     }

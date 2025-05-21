@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
 
 interface ServicesSectionProps {
   onContactClick: () => void
@@ -24,7 +23,7 @@ const services = [
       "Auditable logs for compliance and transparency",
       "Immediate time and cost savings with minimal onboarding",
     ],
-    image: "/images/logistics.png",
+    image: "images/logistics.png",
   },
   {
     id: 2,
@@ -39,7 +38,7 @@ const services = [
       "Automated reporting with zero configuration",
       "Simplified asset decommissioning",
     ],
-    image: "/images/digitalwarehouse.png",
+    image: "images/digitalwarehouse.png",
   },
   {
     id: 3,
@@ -54,7 +53,7 @@ const services = [
       "Real-time condition and location updates",
       "Scalable architecture for growing asset networks",
     ],
-    image: "/images/iotsensors.png",
+    image: "images/iotsensors.png",
   },
   {
     id: 4,
@@ -69,7 +68,7 @@ const services = [
       "Smooth integration with financial and logistics platforms",
       "Easy deployment and internal adoption",
     ],
-    image: "/images/customdigital.png",
+    image: "images/customdigital.png",
   },
 ]
 
@@ -168,12 +167,10 @@ export default function ServicesSection({ onContactClick }: ServicesSectionProps
 
                 <div className="order-1 md:order-2 flex justify-center">
                   <div className="relative w-full max-w-md aspect-square flex items-center justify-center">
-                    <Image
+                    <img
                       src={currentService.image || "/placeholder.svg"}
                       alt={currentService.title}
-                      width={400}
-                      height={400}
-                      className="object-contain"
+                      className="object-contain w-full h-full"
                     />
                   </div>
                 </div>
