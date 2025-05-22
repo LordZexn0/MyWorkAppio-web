@@ -47,7 +47,7 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <img src="images/logo.png" alt="MyWorkApp.io Logo" className="h-40 w-auto" />
+          <img src="/images/logo-transparent.png" alt="MyWorkApp.io Logo" className="h-40 w-auto" />
         </motion.div>
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
