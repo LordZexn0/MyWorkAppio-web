@@ -1,6 +1,17 @@
 import Link from "next/link"
+import { useCMSSection } from "@/hooks/use-cms"
 
 export default function Footer() {
+  const { content: siteContent } = useCMSSection("site")
+  const { content: footerContent } = useCMSSection("footer")
+
+  if (!siteContent || !footerContent) {
+    return null // Loading state
+  }
+
+  const currentYear = new Date().getFullYear()
+  const copyright = footerContent.copyright.replace("{year}", currentYear.toString())
+
   return (
     <footer className="w-full py-12 bg-gray-900 text-white">
       <div className="container mx-auto px-4">
@@ -8,74 +19,54 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="md:col-span-2">
             <div className="flex items-center mb-4">
-              <img src="/images/logo-transparent.png" alt="MyWorkApp.io Logo" className="h-10 w-auto mr-3" />
-              <span className="text-xl font-bold">MyWorkApp.io</span>
+              <img
+                src={siteContent.logo || "/placeholder.svg"}
+                alt={`${siteContent.name} Logo`}
+                className="h-10 w-auto mr-3"
+              />
+              <span className="text-xl font-bold">{siteContent.name}</span>
             </div>
-            <p className="text-gray-400 mb-4 max-w-md">
-              Transforming operations with turnkey solutions for logistics, warehouse management, IoT tracking, and
-              custom digital workflows.
-            </p>
-            <p className="text-gray-400 text-sm">Modern Solutions For Tomorrow's Challenges</p>
+            <p className="text-gray-400 mb-4 max-w-md">{footerContent.description}</p>
+            <p className="text-gray-400 text-sm">{siteContent.tagline}</p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4 text-[#FFCF40]">Quick Links</h3>
+            <h3 className="font-semibold mb-4 text-[#FFCF40]">{footerContent.quickLinks.title}</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/why-us" className="text-gray-400 hover:text-white transition-colors">
-                  Why Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/case-studies" className="text-gray-400 hover:text-white transition-colors">
-                  Case Studies
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
+              {footerContent.quickLinks.items.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-gray-400 hover:text-white transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="font-semibold mb-4 text-[#FFCF40]">Contact</h3>
+            <h3 className="font-semibold mb-4 text-[#FFCF40]">{footerContent.contact.title}</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>123 Business District</li>
-              <li>Tech City, TC 12345</li>
-              <li>+1 (555) 123-4567</li>
-              <li>hello@myworkapp.io</li>
+              {footerContent.contact.items.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} MyWorkApp.io. All rights reserved.</p>
+          <p className="text-gray-400 text-sm">{copyright}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Terms of Service
-            </Link>
+            {footerContent.legal.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

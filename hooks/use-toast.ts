@@ -3,20 +3,19 @@
 // Inspired by react-hot-toast library
 import * as React from "react"
 
-import type {
-  ToastActionElement,
-  ToastProps,
-} from "@/components/ui/toast"
-
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+type ToastProps = {
+  title?: string
+  description?: string
+  variant?: "default" | "destructive"
+}
 
 type ToasterToast = ToastProps & {
   id: string
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: ToastActionElement
+  open: boolean
 }
+
+const TOAST_LIMIT = 1
+const TOAST_REMOVE_DELAY = 1000000
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -85,9 +84,7 @@ export const reducer = (state: State, action: Action): State => {
     case "UPDATE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t
-        ),
+        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
       }
 
     case "DISMISS_TOAST": {
@@ -111,7 +108,7 @@ export const reducer = (state: State, action: Action): State => {
                 ...t,
                 open: false,
               }
-            : t
+            : t,
         ),
       }
     }
@@ -140,39 +137,26 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
-
-function toast({ ...props }: Toast) {
-  const id = genId()
-
-  const update = (props: ToasterToast) =>
-    dispatch({
-      type: "UPDATE_TOAST",
-      toast: { ...props, id },
-    })
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
-
-  dispatch({
-    type: "ADD_TOAST",
-    toast: {
-      ...props,
-      id,
-      open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss()
-      },
-    },
-  })
-
-  return {
-    id: id,
-    dismiss,
-    update,
-  }
-}
-
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
+
+  const toast = React.useCallback(({ title, description, variant = "default" }: ToastProps) => {
+    // Simple toast implementation - you can replace with a proper toast library
+    const toastElement = document.createElement("div")
+    toastElement.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+      variant === "destructive" ? "bg-red-500 text-white" : "bg-green-500 text-white"
+    }`
+    toastElement.innerHTML = `
+      <div class="font-semibold">${title || ""}</div>
+      <div class="text-sm">${description || ""}</div>
+    `
+
+    document.body.appendChild(toastElement)
+
+    setTimeout(() => {
+      document.body.removeChild(toastElement)
+    }, 3000)
+  }, [])
 
   React.useEffect(() => {
     listeners.push(setState)
@@ -184,11 +168,7 @@ function useToast() {
     }
   }, [state])
 
-  return {
-    ...state,
-    toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-  }
+  return { toast }
 }
 
-export { useToast, toast }
+export { useToast }

@@ -7,6 +7,7 @@ import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import LoadingScreen from "@/components/loading-screen"
+import Link from "next/link"
 
 const blogPosts = [
   {
@@ -172,8 +173,10 @@ export default function BlogPage() {
                   </div>
 
                   <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white px-6 py-3 rounded-none">
-                    Read Full Article
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <Link href={`/blog/${featuredPost.id}`} className="flex items-center">
+                      Read Full Article
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
                   </Button>
                 </div>
               </motion.div>
@@ -214,48 +217,53 @@ export default function BlogPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="bg-white border border-gray-200 hover:border-[#FFCF40] transition-colors group"
                 >
-                  <div className="bg-gray-100 aspect-video flex items-center justify-center">
-                    <div className="text-center text-gray-500">
-                      <Calendar className="w-12 h-12 mx-auto mb-2" />
-                      <p className="text-sm">Article Image</p>
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <span className="px-3 py-1 bg-[#FFCF40]/20 text-[#FF6B35] text-xs font-medium rounded-full">
-                      {post.category}
-                    </span>
-
-                    <h3 className="text-xl font-bold mt-4 mb-3 text-[#0F4C81] group-hover:text-[#FF6B35] transition-colors">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-gray-600 mb-4 text-sm">{post.excerpt}</p>
-
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center">
-                          <User className="w-3 h-3 mr-1" />
-                          {post.author}
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="w-3 h-3 mr-1" />
-                          {post.date}
-                        </div>
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {post.readTime}
+                  <Link href={`/blog/${post.id}`}>
+                    <div className="bg-gray-100 aspect-video flex items-center justify-center">
+                      <div className="text-center text-gray-500">
+                        <Calendar className="w-12 h-12 mx-auto mb-2" />
+                        <p className="text-sm">Article Image</p>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <Button variant="ghost" className="text-[#FF6B35] hover:text-[#FF6B35]/80 p-0 h-auto font-medium">
-                        Read More
-                        <ArrowRight className="ml-1 h-3 w-3" />
-                      </Button>
+                    <div className="p-6">
+                      <span className="px-3 py-1 bg-[#FFCF40]/20 text-[#FF6B35] text-xs font-medium rounded-full">
+                        {post.category}
+                      </span>
+
+                      <h3 className="text-xl font-bold mt-4 mb-3 text-[#0F4C81] group-hover:text-[#FF6B35] transition-colors">
+                        {post.title}
+                      </h3>
+
+                      <p className="text-gray-600 mb-4 text-sm">{post.excerpt}</p>
+
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center">
+                            <User className="w-3 h-3 mr-1" />
+                            {post.author}
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            {post.date}
+                          </div>
+                        </div>
+                        <div className="flex items-center">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {post.readTime}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <Button
+                          variant="ghost"
+                          className="text-[#FF6B35] hover:text-[#FF6B35]/80 p-0 h-auto font-medium"
+                        >
+                          Read More
+                          <ArrowRight className="ml-1 h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </motion.article>
               ))}
             </div>
