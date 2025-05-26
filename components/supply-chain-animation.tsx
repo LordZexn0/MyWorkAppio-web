@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
-import { Truck, Package, BarChart3, Warehouse, ArrowRight } from "lucide-react"
+import { Truck, Package, BarChart3, Warehouse, ArrowRight, ArrowDown } from "lucide-react"
 import { useCMSSection } from "@/hooks/use-cms"
 
 const iconMap = {
@@ -36,8 +36,8 @@ export default function SupplyChainAnimation() {
   }
 
   const arrowVariants = {
-    hidden: { opacity: 0, width: 0 },
-    visible: { opacity: 1, width: "100%", transition: { duration: 0.8, delay: 0.2 } },
+    hidden: { opacity: 0, scale: 0 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.8, delay: 0.4 } },
   }
 
   return (
@@ -54,46 +54,105 @@ export default function SupplyChainAnimation() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 py-10"
+          className="relative"
         >
-          {content.steps.map((step, index) => {
-            const IconComponent = iconMap[step.icon as keyof typeof iconMap]
-            return (
-              <div key={step.title}>
-                <motion.div variants={itemVariants} className="flex flex-col items-center text-center px-4">
-                  <div className="w-20 h-20 rounded-full bg-[#0F4C81]/10 flex items-center justify-center mb-4">
-                    <IconComponent className={`w-10 h-10 ${step.color}`} />
-                  </div>
-                  <h3 className={`text-lg font-semibold mb-2 ${step.color}`}>{step.title}</h3>
-                  <p className="text-sm text-gray-600">{step.description}</p>
-                </motion.div>
+          {/* Desktop Layout */}
+          <div className="hidden lg:flex items-center justify-between">
+            {content.steps.map((step, index) => {
+              const IconComponent = iconMap[step.icon as keyof typeof iconMap]
+              return (
+                <div key={step.title} className="flex items-center">
+                  <motion.div variants={itemVariants} className="flex flex-col items-center text-center px-4">
+                    <div className="w-20 h-20 rounded-full bg-[#0F4C81]/10 flex items-center justify-center mb-4 hover:bg-[#0F4C81]/20 transition-colors duration-300">
+                      <IconComponent className={`w-10 h-10 ${step.color}`} />
+                    </div>
+                    <h3 className={`text-lg font-semibold mb-2 ${step.color}`}>{step.title}</h3>
+                    <p className="text-sm text-gray-600 max-w-[140px]">{step.description}</p>
+                  </motion.div>
 
-                {/* Arrow between steps (desktop) */}
-                {index < content.steps.length - 1 && (
-                  <motion.div
-                    variants={arrowVariants}
-                    className="hidden md:block w-full max-w-[60px] h-[2px] bg-[#FFCF40]"
-                  />
-                )}
-              </div>
-            )
-          })}
+                  {/* Arrow between steps (desktop) */}
+                  {index < content.steps.length - 1 && (
+                    <motion.div
+                      variants={arrowVariants}
+                      className="flex-1 flex items-center justify-center px-4 min-w-[60px]"
+                    >
+                      <ArrowRight className="w-8 h-8 text-[#FFCF40]" />
+                    </motion.div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Tablet Layout */}
+          <div className="hidden md:grid lg:hidden grid-cols-2 gap-8">
+            {content.steps.map((step, index) => {
+              const IconComponent = iconMap[step.icon as keyof typeof iconMap]
+              return (
+                <div key={step.title} className="relative">
+                  <motion.div variants={itemVariants} className="flex flex-col items-center text-center p-6">
+                    <div className="w-20 h-20 rounded-full bg-[#0F4C81]/10 flex items-center justify-center mb-4 hover:bg-[#0F4C81]/20 transition-colors duration-300">
+                      <IconComponent className={`w-10 h-10 ${step.color}`} />
+                    </div>
+                    <h3 className={`text-lg font-semibold mb-2 ${step.color}`}>{step.title}</h3>
+                    <p className="text-sm text-gray-600">{step.description}</p>
+                  </motion.div>
+
+                  {/* Connecting arrows for tablet */}
+                  {index === 0 && (
+                    <motion.div
+                      variants={arrowVariants}
+                      className="absolute top-1/2 -right-4 transform -translate-y-1/2"
+                    >
+                      <ArrowRight className="w-6 h-6 text-[#FFCF40]" />
+                    </motion.div>
+                  )}
+                  {index === 1 && (
+                    <motion.div
+                      variants={arrowVariants}
+                      className="absolute -bottom-4 left-1/2 transform -translate-x-1/2"
+                    >
+                      <ArrowDown className="w-6 h-6 text-[#FFCF40]" />
+                    </motion.div>
+                  )}
+                  {index === 2 && (
+                    <motion.div
+                      variants={arrowVariants}
+                      className="absolute top-1/2 -left-4 transform -translate-y-1/2 rotate-180"
+                    >
+                      <ArrowRight className="w-6 h-6 text-[#FFCF40]" />
+                    </motion.div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="md:hidden space-y-6">
+            {content.steps.map((step, index) => {
+              const IconComponent = iconMap[step.icon as keyof typeof iconMap]
+              return (
+                <div key={step.title}>
+                  <motion.div variants={itemVariants} className="flex flex-col items-center text-center p-6">
+                    <div className="w-16 h-16 rounded-full bg-[#0F4C81]/10 flex items-center justify-center mb-4 hover:bg-[#0F4C81]/20 transition-colors duration-300">
+                      <IconComponent className={`w-8 h-8 ${step.color}`} />
+                    </div>
+                    <h3 className={`text-base font-semibold mb-2 ${step.color}`}>{step.title}</h3>
+                    <p className="text-sm text-gray-600">{step.description}</p>
+                  </motion.div>
+
+                  {/* Arrow between steps (mobile) */}
+                  {index < content.steps.length - 1 && (
+                    <motion.div variants={arrowVariants} className="flex justify-center py-2">
+                      <ArrowDown className="w-6 h-6 text-[#FFCF40]" />
+                    </motion.div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </motion.div>
-
-        {/* Mobile arrows */}
-        <div className="md:hidden flex flex-col items-center">
-          {content.steps.slice(0, -1).map((_, i) => (
-            <motion.div
-              key={i}
-              variants={itemVariants}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              className="my-2"
-            >
-              <ArrowRight className="w-6 h-6 text-[#FFCF40]" />
-            </motion.div>
-          ))}
-        </div>
 
         <motion.div
           variants={itemVariants}
