@@ -44,14 +44,14 @@ export default function HeroSection() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 font-heading text-[#0F4C81]">
-            <span className="block">{hero?.title || "Transform Your Business Operations"}</span>
+            <span className="block">{hero?.title || "MyWorkApp.io"}</span>
           </h1>
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-black mb-8 max-w-3xl mx-auto">
-            {hero?.subtitle || "Streamline, Automate, and Optimize"}
+            {hero?.subtitle || "Modern Solutions For Tomorrow's Challenges"}
           </p>
           <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
             {hero?.description ||
-              "We deliver turnkey digital solutions that revolutionize how you manage logistics, warehouses, and supply chains."}
+              "Transform your operations with our turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows."}
           </p>
         </motion.div>
 
@@ -63,7 +63,7 @@ export default function HeroSection() {
         >
           <Link href="/services">
             <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white px-8 py-6 rounded-none text-lg font-medium">
-              {hero?.primaryButton || "Get Started"}
+              {hero?.primaryButton || "Explore Our Services"}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
@@ -73,7 +73,7 @@ export default function HeroSection() {
               className="border-[#0F4C81] text-[#0F4C81] hover:bg-[#0F4C81] hover:text-white px-8 py-6 rounded-none text-lg font-medium"
             >
               <Play className="mr-2 h-5 w-5" />
-              {hero?.secondaryButton || "Watch Demo"}
+              {hero?.secondaryButton || "View Case Studies"}
             </Button>
           </Link>
         </motion.div>
@@ -85,7 +85,13 @@ export default function HeroSection() {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-4xl mx-auto"
         >
-          {(stats || []).map((stat, index) => (
+          {(
+            stats || [
+              { number: "500+", label: "Projects Completed" },
+              { number: "99%", label: "Client Satisfaction" },
+              { number: "24/7", label: "Support Available" },
+            ]
+          ).map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-[#FF6B35] mb-2">{stat.number}</div>
               <div className="text-gray-600">{stat.label}</div>

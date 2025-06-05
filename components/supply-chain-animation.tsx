@@ -1,90 +1,79 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion } from "framer-motion"
 import { Truck, Package, BarChart3, Warehouse, ArrowRight } from "lucide-react"
 
 const steps = [
   {
-    icon: "Warehouse",
+    icon: Warehouse,
     title: "Warehouse",
     description: "Inventory tracking and management",
-    color: "text-[#0F4C81]",
-    bgColor: "bg-[#0F4C81]",
+    color: "text-blue-900",
+    bgColor: "bg-blue-900",
   },
   {
-    icon: "Package",
+    icon: Package,
     title: "Packaging",
     description: "Automated order processing",
-    color: "text-[#FFCF40]",
-    bgColor: "bg-[#FFCF40]",
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-500",
   },
   {
-    icon: "Truck",
+    icon: Truck,
     title: "Shipping",
     description: "Real-time tracking and routing",
-    color: "text-[#FF6B35]",
-    bgColor: "bg-[#FF6B35]",
+    color: "text-orange-500",
+    bgColor: "bg-orange-500",
   },
   {
-    icon: "BarChart3",
+    icon: BarChart3,
     title: "Analytics",
     description: "Performance insights and reporting",
-    color: "text-[#0F4C81]",
-    bgColor: "bg-[#0F4C81]",
+    color: "text-blue-900",
+    bgColor: "bg-blue-900",
   },
 ]
 
-const iconMap = {
-  Warehouse,
-  Package,
-  Truck,
-  BarChart3,
-}
-
 export default function SupplyChainAnimation() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
-
   return (
     <section className="w-full py-20 px-4 md:px-8 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 font-heading text-[#0F4C81]">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 font-heading text-blue-900">
             Our End-to-End Supply Chain Solution
           </h2>
-          <div className="h-1 w-24 bg-gradient-to-r from-[#FFCF40] to-[#FF6B35] mx-auto mb-6 rounded-full"></div>
+          <div className="h-1 w-24 bg-gradient-to-r from-yellow-400 to-orange-500 mx-auto mb-6 rounded-full"></div>
           <p className="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
             From warehouse to delivery, our integrated platform streamlines every step of your logistics operations with
             seamless automation and real-time visibility.
           </p>
         </motion.div>
 
-        <div ref={ref} className="relative">
-          {/* Desktop Layout (1024px and up) - Horizontal Flow */}
+        <div className="relative">
+          {/* Desktop Layout */}
           <div className="hidden lg:block">
             <div className="relative flex items-center justify-between max-w-6xl mx-auto">
               {/* Connecting Line */}
               <motion.div
                 initial={{ scaleX: 0 }}
-                animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+                animate={{ scaleX: 1 }}
                 transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
-                className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-[#0F4C81] via-[#FFCF40] to-[#FF6B35] transform -translate-y-1/2 origin-left rounded-full"
+                className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-900 via-yellow-400 to-orange-500 transform -translate-y-1/2 origin-left rounded-full"
                 style={{ zIndex: 1 }}
               />
 
               {steps.map((step, index) => {
-                const IconComponent = iconMap[step.icon as keyof typeof iconMap]
+                const IconComponent = step.icon
                 return (
                   <motion.div
                     key={step.title}
                     initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                    animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{
                       duration: 0.8,
                       delay: index * 0.2 + 0.3,
@@ -109,7 +98,7 @@ export default function SupplyChainAnimation() {
 
                       {/* Pulse Animation */}
                       <motion.div
-                        animate={isInView ? { scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] } : {}}
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
                         transition={{
                           duration: 2,
                           repeat: Number.POSITIVE_INFINITY,
@@ -122,7 +111,7 @@ export default function SupplyChainAnimation() {
                     {/* Content */}
                     <motion.div
                       initial={{ opacity: 0 }}
-                      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ duration: 0.6, delay: index * 0.2 + 0.8 }}
                       className="max-w-[180px]"
                     >
@@ -139,7 +128,7 @@ export default function SupplyChainAnimation() {
                     {/* Step Number */}
                     <motion.div
                       initial={{ opacity: 0, scale: 0 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: index * 0.2 + 1.2 }}
                       className={`absolute -top-3 -right-3 w-8 h-8 ${step.bgColor} text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg`}
                     >
@@ -151,71 +140,15 @@ export default function SupplyChainAnimation() {
             </div>
           </div>
 
-          {/* Tablet Layout (768px to 1023px) - Vertical Flow */}
-          <div className="hidden md:block lg:hidden">
-            <div className="space-y-12 max-w-md mx-auto">
-              {steps.map((step, index) => {
-                const IconComponent = iconMap[step.icon as keyof typeof iconMap]
-                return (
-                  <motion.div
-                    key={step.title}
-                    initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                    transition={{
-                      duration: 0.8,
-                      delay: index * 0.2,
-                      ease: "easeOut",
-                    }}
-                    className="flex flex-col items-center text-center relative"
-                  >
-                    <motion.div
-                      whileHover={{ scale: 1.05, y: -3 }}
-                      className="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center mb-4 border-2 border-gray-100 group-hover:shadow-xl transition-all duration-300 relative"
-                    >
-                      <IconComponent className={`w-10 h-10 ${step.color}`} />
-
-                      {/* Step Number for tablet */}
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
-                        className={`absolute -top-2 -right-2 w-6 h-6 ${step.bgColor} text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg`}
-                      >
-                        {index + 1}
-                      </motion.div>
-                    </motion.div>
-
-                    <h3 className={`text-lg font-bold mb-2 ${step.color}`}>{step.title}</h3>
-                    <p className="text-sm text-gray-600 max-w-[200px] leading-relaxed">{step.description}</p>
-
-                    {/* Downward arrow for tablet - only between steps */}
-                    {index < steps.length - 1 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
-                        transition={{ duration: 0.5, delay: index * 0.2 + 0.8 }}
-                        className="mt-6 mb-2"
-                      >
-                        <div className="transform rotate-90">
-                          <ArrowRight className="w-6 h-6 text-[#FFCF40]" />
-                        </div>
-                      </motion.div>
-                    )}
-                  </motion.div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Mobile Layout (below 768px) - Vertical Stack */}
-          <div className="md:hidden space-y-8">
+          {/* Mobile Layout */}
+          <div className="lg:hidden space-y-8">
             {steps.map((step, index) => {
-              const IconComponent = iconMap[step.icon as keyof typeof iconMap]
+              const IconComponent = step.icon
               return (
                 <motion.div
                   key={step.title}
                   initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
                     duration: 0.8,
                     delay: index * 0.2,
@@ -232,7 +165,7 @@ export default function SupplyChainAnimation() {
                     {/* Step Number for mobile */}
                     <motion.div
                       initial={{ opacity: 0, scale: 0 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
                       className={`absolute -top-1 -right-1 w-5 h-5 ${step.bgColor} text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg`}
                     >
@@ -247,12 +180,12 @@ export default function SupplyChainAnimation() {
                   {index < steps.length - 1 && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
-                      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.2 + 0.8 }}
                       className="mt-6 mb-2"
                     >
                       <div className="transform rotate-90">
-                        <ArrowRight className="w-6 h-6 text-[#FFCF40]" />
+                        <ArrowRight className="w-6 h-6 text-yellow-400" />
                       </div>
                     </motion.div>
                   )}
@@ -264,7 +197,7 @@ export default function SupplyChainAnimation() {
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.5 }}
           className="text-center mt-16"
         >

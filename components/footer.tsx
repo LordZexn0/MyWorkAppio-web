@@ -7,31 +7,33 @@ export default function Footer() {
   const { content: siteContent } = useCMSSection("site")
   const { content: footerContent } = useCMSSection("footer")
 
-  // Provide fallback values
-  const siteName = siteContent?.name || "MyWorkApp"
+  // Provide fallback values with original content
+  const siteName = siteContent?.name || "MyWorkApp.io"
   const siteLogo = siteContent?.logo || "/images/logo-transparent.png"
-  const siteTagline = siteContent?.tagline || "Transform your operations with cutting-edge technology"
+  const siteTagline = siteContent?.tagline || "Modern Solutions For Tomorrow's Challenges"
 
   const footerDescription =
     footerContent?.description ||
-    "Leading provider of digital transformation solutions for logistics and supply chain management."
+    "Transforming operations with turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows."
   const currentYear = new Date().getFullYear()
   const copyright =
     footerContent?.copyright?.replace("{year}", currentYear.toString()) ||
-    `© ${currentYear} ${siteName}. All rights reserved.`
+    `© ${currentYear} MyWorkApp.io. All rights reserved.`
 
   const quickLinks = footerContent?.quickLinks?.items || [
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
-    { label: "About", href: "/why-us" },
+    { label: "Why Us", href: "/why-us" },
+    { label: "Case Studies", href: "/case-studies" },
+    { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ]
 
   const contactItems = footerContent?.contact?.items || [
-    "123 Business Street",
-    "City, State 12345",
+    "123 Business District",
+    "Tech City, TC 12345",
     "+1 (555) 123-4567",
-    "info@myworkapp.com",
+    "hello@myworkapp.io",
   ]
 
   const legalItems = footerContent?.legal || [

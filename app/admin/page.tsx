@@ -9,45 +9,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
-import { Upload, Save, FileText, Info, ImageIcon, Users } from "lucide-react"
+import { Save, FileText, Info, ImageIcon, Users } from "lucide-react"
 
 interface CMSData {
-  hero: {
-    title: string
-    subtitle: string
-    ctaText: string
-  }
-  about: {
-    title: string
-    description: string
-    features: string[]
-  }
-  services: {
-    title: string
-    items: Array<{
+  home: {
+    hero: {
       title: string
-      description: string
-      image: string
-    }>
+      subtitle: string
+    }
   }
   site: {
     name: string
     description: string
-    contact: {
-      email: string
-      phone: string
-      address: string
-    }
-  }
-  blog: {
-    posts: Array<{
-      id: string
-      title: string
-      excerpt: string
-      content: string
-      image: string
-      date: string
-    }>
   }
 }
 
@@ -271,8 +244,14 @@ export default function AdminPage() {
                   <Label htmlFor="hero-title">Title</Label>
                   <Input
                     id="hero-title"
-                    value={data.hero.title}
-                    onChange={(e) => updateData(["hero", "title"], e.target.value)}
+                    value={data?.home?.hero?.title || ""}
+                    onChange={(e) => {
+                      const newData = { ...data }
+                      if (!newData.home) newData.home = {}
+                      if (!newData.home.hero) newData.home.hero = {}
+                      newData.home.hero.title = e.target.value
+                      setData(newData)
+                    }}
                     placeholder="Main hero title"
                   />
                 </div>
@@ -280,19 +259,16 @@ export default function AdminPage() {
                   <Label htmlFor="hero-subtitle">Subtitle</Label>
                   <Textarea
                     id="hero-subtitle"
-                    value={data.hero.subtitle}
-                    onChange={(e) => updateData(["hero", "subtitle"], e.target.value)}
+                    value={data?.home?.hero?.subtitle || ""}
+                    onChange={(e) => {
+                      const newData = { ...data }
+                      if (!newData.home) newData.home = {}
+                      if (!newData.home.hero) newData.home.hero = {}
+                      newData.home.hero.subtitle = e.target.value
+                      setData(newData)
+                    }}
                     placeholder="Hero subtitle/description"
                     rows={3}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="hero-cta">Call to Action Text</Label>
-                  <Input
-                    id="hero-cta"
-                    value={data.hero.ctaText}
-                    onChange={(e) => updateData(["hero", "ctaText"], e.target.value)}
-                    placeholder="Button text"
                   />
                 </div>
               </CardContent>
@@ -304,41 +280,7 @@ export default function AdminPage() {
               <CardHeader>
                 <CardTitle>📋 About Section</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="about-title">Title</Label>
-                  <Input
-                    id="about-title"
-                    value={data.about.title}
-                    onChange={(e) => updateData(["about", "title"], e.target.value)}
-                    placeholder="About section title"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="about-description">Description</Label>
-                  <Textarea
-                    id="about-description"
-                    value={data.about.description}
-                    onChange={(e) => updateData(["about", "description"], e.target.value)}
-                    placeholder="About description"
-                    rows={4}
-                  />
-                </div>
-                <div>
-                  <Label>Features (one per line)</Label>
-                  <Textarea
-                    value={data.about.features.join("\n")}
-                    onChange={(e) =>
-                      updateData(
-                        ["about", "features"],
-                        e.target.value.split("\n").filter((f) => f.trim()),
-                      )
-                    }
-                    placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
-                    rows={5}
-                  />
-                </div>
-              </CardContent>
+              <CardContent className="space-y-4">{/* Placeholder for About Section */}</CardContent>
             </Card>
           </TabsContent>
 
@@ -347,100 +289,7 @@ export default function AdminPage() {
               <CardHeader>
                 <CardTitle>⚙️ Services Section</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <Label htmlFor="services-title">Section Title</Label>
-                  <Input
-                    id="services-title"
-                    value={data.services.title}
-                    onChange={(e) => updateData(["services", "title"], e.target.value)}
-                    placeholder="Services section title"
-                  />
-                </div>
-
-                <div className="space-y-6">
-                  {data.services.items.map((service, index) => (
-                    <Card key={index} className="border-l-4 border-l-blue-500">
-                      <CardHeader>
-                        <CardTitle className="text-lg">Service {index + 1}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div>
-                          <Label>Title</Label>
-                          <Input
-                            value={service.title}
-                            onChange={(e) => {
-                              const newItems = [...data.services.items]
-                              newItems[index].title = e.target.value
-                              updateData(["services", "items"], newItems)
-                            }}
-                            placeholder="Service title"
-                          />
-                        </div>
-                        <div>
-                          <Label>Description</Label>
-                          <Textarea
-                            value={service.description}
-                            onChange={(e) => {
-                              const newItems = [...data.services.items]
-                              newItems[index].description = e.target.value
-                              updateData(["services", "items"], newItems)
-                            }}
-                            placeholder="Service description"
-                            rows={3}
-                          />
-                        </div>
-                        <div>
-                          <Label>Image</Label>
-                          <div className="flex items-center gap-4">
-                            <Input
-                              value={service.image}
-                              onChange={(e) => {
-                                const newItems = [...data.services.items]
-                                newItems[index].image = e.target.value
-                                updateData(["services", "items"], newItems)
-                              }}
-                              placeholder="Image URL or path"
-                            />
-                            <div className="relative">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0]
-                                  if (file) {
-                                    handleImageUpload(file, "services", index)
-                                  }
-                                }}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                disabled={uploadingImage}
-                              />
-                              <Button
-                                type="button"
-                                variant="outline"
-                                disabled={uploadingImage}
-                                className="flex items-center gap-2"
-                              >
-                                <Upload className="w-4 h-4" />
-                                {uploadingImage ? "Uploading..." : "Upload"}
-                              </Button>
-                            </div>
-                          </div>
-                          {service.image && (
-                            <div className="mt-2">
-                              <img
-                                src={service.image || "/placeholder.svg"}
-                                alt="Preview"
-                                className="w-32 h-20 object-cover rounded border"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
+              <CardContent className="space-y-6">{/* Placeholder for Services Section */}</CardContent>
             </Card>
           </TabsContent>
 
@@ -454,53 +303,30 @@ export default function AdminPage() {
                   <Label htmlFor="site-name">Site Name</Label>
                   <Input
                     id="site-name"
-                    value={data.site.name}
-                    onChange={(e) => updateData(["site", "name"], e.target.value)}
+                    value={data?.site?.name || ""}
+                    onChange={(e) => {
+                      const newData = { ...data }
+                      if (!newData.site) newData.site = {}
+                      newData.site.name = e.target.value
+                      setData(newData)
+                    }}
                     placeholder="Website name"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="site-description">Site Description</Label>
+                  <Label htmlFor="site-description">Description</Label>
                   <Textarea
                     id="site-description"
-                    value={data.site.description}
-                    onChange={(e) => updateData(["site", "description"], e.target.value)}
+                    value={data?.site?.description || ""}
+                    onChange={(e) => {
+                      const newData = { ...data }
+                      if (!newData.site) newData.site = {}
+                      newData.site.description = e.target.value
+                      setData(newData)
+                    }}
                     placeholder="Website description"
                     rows={3}
                   />
-                </div>
-
-                <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold">📞 Contact Information</h3>
-                  <div>
-                    <Label htmlFor="contact-email">Email</Label>
-                    <Input
-                      id="contact-email"
-                      type="email"
-                      value={data.site.contact.email}
-                      onChange={(e) => updateData(["site", "contact", "email"], e.target.value)}
-                      placeholder="contact@example.com"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact-phone">Phone</Label>
-                    <Input
-                      id="contact-phone"
-                      value={data.site.contact.phone}
-                      onChange={(e) => updateData(["site", "contact", "phone"], e.target.value)}
-                      placeholder="+1 (555) 123-4567"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact-address">Address</Label>
-                    <Textarea
-                      id="contact-address"
-                      value={data.site.contact.address}
-                      onChange={(e) => updateData(["site", "contact", "address"], e.target.value)}
-                      placeholder="123 Main St, City, State 12345"
-                      rows={2}
-                    />
-                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -511,113 +337,7 @@ export default function AdminPage() {
               <CardHeader>
                 <CardTitle>📝 Blog Posts</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {data.blog.posts.map((post, index) => (
-                  <Card key={post.id} className="border-l-4 border-l-green-500">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Post {index + 1}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <Label>Title</Label>
-                        <Input
-                          value={post.title}
-                          onChange={(e) => {
-                            const newPosts = [...data.blog.posts]
-                            newPosts[index].title = e.target.value
-                            updateData(["blog", "posts"], newPosts)
-                          }}
-                          placeholder="Blog post title"
-                        />
-                      </div>
-                      <div>
-                        <Label>Excerpt</Label>
-                        <Textarea
-                          value={post.excerpt}
-                          onChange={(e) => {
-                            const newPosts = [...data.blog.posts]
-                            newPosts[index].excerpt = e.target.value
-                            updateData(["blog", "posts"], newPosts)
-                          }}
-                          placeholder="Short description"
-                          rows={2}
-                        />
-                      </div>
-                      <div>
-                        <Label>Content</Label>
-                        <Textarea
-                          value={post.content}
-                          onChange={(e) => {
-                            const newPosts = [...data.blog.posts]
-                            newPosts[index].content = e.target.value
-                            updateData(["blog", "posts"], newPosts)
-                          }}
-                          placeholder="Full blog post content"
-                          rows={6}
-                        />
-                      </div>
-                      <div>
-                        <Label>Image</Label>
-                        <div className="flex items-center gap-4">
-                          <Input
-                            value={post.image}
-                            onChange={(e) => {
-                              const newPosts = [...data.blog.posts]
-                              newPosts[index].image = e.target.value
-                              updateData(["blog", "posts"], newPosts)
-                            }}
-                            placeholder="Image URL or path"
-                          />
-                          <div className="relative">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) {
-                                  handleImageUpload(file, "blog", index)
-                                }
-                              }}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                              disabled={uploadingImage}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              disabled={uploadingImage}
-                              className="flex items-center gap-2"
-                            >
-                              <Upload className="w-4 h-4" />
-                              {uploadingImage ? "Uploading..." : "Upload"}
-                            </Button>
-                          </div>
-                        </div>
-                        {post.image && (
-                          <div className="mt-2">
-                            <img
-                              src={post.image || "/placeholder.svg"}
-                              alt="Preview"
-                              className="w-32 h-20 object-cover rounded border"
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <Label>Date</Label>
-                        <Input
-                          type="date"
-                          value={post.date}
-                          onChange={(e) => {
-                            const newPosts = [...data.blog.posts]
-                            newPosts[index].date = e.target.value
-                            updateData(["blog", "posts"], newPosts)
-                          }}
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </CardContent>
+              <CardContent className="space-y-6">{/* Placeholder for Blog Section */}</CardContent>
             </Card>
           </TabsContent>
         </Tabs>

@@ -15,6 +15,10 @@ interface CMSContent {
       businessHours: string
     }
   }
+  navigation: {
+    items: Array<{ href: string; label: string }>
+    ctaButton: string
+  }
   home: {
     hero: {
       title: string
@@ -51,25 +55,37 @@ interface CMSContent {
 
 const defaultContent: CMSContent = {
   site: {
-    name: "MyWorkApp",
+    name: "MyWorkApp.io",
     logo: "/images/logo-transparent.png",
-    description: "Innovative digital solutions for modern businesses",
-    tagline: "Transform your operations with cutting-edge technology",
+    description:
+      "End-to-end turnkey solutions for logistics, warehouse management, IoT tracking, and custom workflows.",
+    tagline: "Modern Solutions For Tomorrow's Challenges",
     contact: {
-      address: "123 Business Street\nSuite 100\nCity, State 12345",
+      address: "123 Business District\nTech City, TC 12345",
       phone: "+1 (555) 123-4567",
-      email: "info@myworkapp.com",
-      businessHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+      email: "hello@myworkapp.io",
+      businessHours: "Mon - Fri: 9:00 AM - 6:00 PM\nSat - Sun: Closed",
     },
+  },
+  navigation: {
+    items: [
+      { href: "/", label: "Home" },
+      { href: "/services", label: "Services" },
+      { href: "/why-us", label: "Why Us" },
+      { href: "/case-studies", label: "Case Studies" },
+      { href: "/blog", label: "Blog" },
+      { href: "/contact", label: "Contact" },
+    ],
+    ctaButton: "Get Started",
   },
   home: {
     hero: {
-      title: "Transform Your Business Operations",
-      subtitle: "Streamline, Automate, and Optimize",
+      title: "MyWorkApp.io",
+      subtitle: "Modern Solutions For Tomorrow's Challenges",
       description:
-        "We deliver turnkey digital solutions that revolutionize how you manage logistics, warehouses, and supply chains.",
-      primaryButton: "Get Started",
-      secondaryButton: "Watch Demo",
+        "Transform your operations with our turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows.",
+      primaryButton: "Explore Our Services",
+      secondaryButton: "View Case Studies",
     },
     stats: [
       { number: "500+", label: "Projects Completed" },
@@ -78,20 +94,23 @@ const defaultContent: CMSContent = {
     ],
   },
   footer: {
-    description: "Leading provider of digital transformation solutions for logistics and supply chain management.",
-    copyright: "© {year} MyWorkApp. All rights reserved.",
+    description:
+      "Transforming operations with turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows.",
+    copyright: "© {year} MyWorkApp.io. All rights reserved.",
     quickLinks: {
       title: "Quick Links",
       items: [
         { label: "Home", href: "/" },
         { label: "Services", href: "/services" },
-        { label: "About", href: "/why-us" },
+        { label: "Why Us", href: "/why-us" },
+        { label: "Case Studies", href: "/case-studies" },
+        { label: "Blog", href: "/blog" },
         { label: "Contact", href: "/contact" },
       ],
     },
     contact: {
       title: "Contact",
-      items: ["123 Business Street", "City, State 12345", "+1 (555) 123-4567", "info@myworkapp.com"],
+      items: ["123 Business District", "Tech City, TC 12345", "+1 (555) 123-4567", "hello@myworkapp.io"],
     },
     legal: [
       { label: "Privacy Policy", href: "/privacy" },
@@ -101,7 +120,7 @@ const defaultContent: CMSContent = {
 }
 
 export function useCMS() {
-  const [content, setContent] = useState<CMSContent>(defaultContent)
+  const [content, setContent] = useState<CMSContent | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -111,9 +130,12 @@ export function useCMS() {
         if (response.ok) {
           const data = await response.json()
           setContent(data)
+        } else {
+          setContent(defaultContent)
         }
       } catch (error) {
         console.error("Failed to fetch CMS content:", error)
+        setContent(defaultContent)
       } finally {
         setIsLoading(false)
       }
@@ -143,14 +165,14 @@ export function useCMS() {
     }
   }
 
-  return { content, isLoading, updateContent }
+  return { content: content || defaultContent, isLoading, updateContent }
 }
 
-export function useCMSSection(section: keyof CMSContent) {
+export function useCMSSection<K extends keyof CMSContent>(section: K) {
   const { content, isLoading } = useCMS()
 
   return {
-    content: content ? content[section] : null,
+    content: content ? content[section] : defaultContent[section],
     isLoading,
   }
 }

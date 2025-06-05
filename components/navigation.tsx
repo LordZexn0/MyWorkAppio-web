@@ -13,9 +13,17 @@ export default function Navigation() {
   const { content: siteContent } = useCMSSection("site")
   const { content: navContent } = useCMSSection("navigation")
 
-  if (!siteContent || !navContent) {
-    return null // Loading state
-  }
+  const siteName = siteContent?.name || "MyWorkApp.io"
+  const siteLogo = siteContent?.logo || "/images/logo-transparent.png"
+  const navItems = navContent?.items || [
+    { href: "/", label: "Home" },
+    { href: "/services", label: "Services" },
+    { href: "/why-us", label: "Why Us" },
+    { href: "/case-studies", label: "Case Studies" },
+    { href: "/blog", label: "Blog" },
+    { href: "/contact", label: "Contact" },
+  ]
+  const ctaButton = navContent?.ctaButton || "Get Started"
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm">
@@ -23,16 +31,12 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <img
-              src={siteContent.logo || "/placeholder.svg"}
-              alt={`${siteContent.name} Logo`}
-              className="h-10 w-auto"
-            />
+            <img src={siteLogo || "/placeholder.svg"} alt={`${siteName} Logo`} className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navContent.items.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -43,9 +47,9 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
-            <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">
-              {navContent.ctaButton}
-            </Button>
+            <Link href="/contact">
+              <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">{ctaButton}</Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -60,7 +64,7 @@ export default function Navigation() {
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
-              {navContent.items.map((item) => (
+              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -73,9 +77,11 @@ export default function Navigation() {
                 </Link>
               ))}
               <div className="px-3 py-2">
-                <Button className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">
-                  {navContent.ctaButton}
-                </Button>
+                <Link href="/contact">
+                  <Button className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">
+                    {ctaButton}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
