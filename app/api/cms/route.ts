@@ -1,26 +1,25 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import { kv } from "@vercel/kv"
 
 // Default CMS content - this will be used as the base content
 const defaultContent = {
   site: {
-    name: "MyWorkApp.io",
-    tagline: "Modern Solutions For Tomorrow's Challenges",
-    description:
-      "End-to-end turnkey solutions for logistics, warehouse management, IoT tracking, and custom workflows.",
+    name: "MyWorkApp",
     logo: "/images/logo-transparent.png",
+    description: "Innovative digital solutions for modern businesses",
+    tagline: "Transform your operations with cutting-edge technology",
     contact: {
+      address: "123 Business Street\nSuite 100\nCity, State 12345",
       phone: "+1 (555) 123-4567",
-      email: "hello@myworkapp.io",
-      address: "123 Business District\nTech City, TC 12345",
-      businessHours: "Mon - Fri: 9:00 AM - 6:00 PM\nSat - Sun: Closed",
+      email: "info@myworkapp.com",
+      businessHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
     },
   },
   navigation: {
     items: [
       { href: "/", label: "Home" },
       { href: "/services", label: "Services" },
-      { href: "/why-us", label: "Why Us" },
+      { href: "/why-us", label: "About" },
       { href: "/case-studies", label: "Case Studies" },
       { href: "/blog", label: "Blog" },
       { href: "/contact", label: "Contact" },
@@ -29,12 +28,12 @@ const defaultContent = {
   },
   home: {
     hero: {
-      title: "MyWorkApp.io",
-      subtitle: "Modern Solutions For Tomorrow's Challenges",
+      title: "Transform Your Business Operations",
+      subtitle: "Streamline, Automate, and Optimize",
       description:
-        "Transform your operations with our turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows.",
-      primaryButton: "Explore Our Services",
-      secondaryButton: "View Case Studies",
+        "We deliver turnkey digital solutions that revolutionize how you manage logistics, warehouses, and supply chains.",
+      primaryButton: "Get Started",
+      secondaryButton: "Watch Demo",
     },
     stats: [
       { number: "500+", label: "Projects Completed" },
@@ -432,7 +431,7 @@ const defaultContent = {
       {
         icon: "MapPin",
         title: "Office Location",
-        info: "123 Business District\nTech City, TC 12345",
+        info: "123 Business Street\nSuite 100\nCity, State 12345",
       },
       {
         icon: "Phone",
@@ -442,12 +441,12 @@ const defaultContent = {
       {
         icon: "Mail",
         title: "Email",
-        info: "hello@myworkapp.io",
+        info: "info@myworkapp.com",
       },
       {
         icon: "Clock",
         title: "Business Hours",
-        info: "Mon - Fri: 9:00 AM - 6:00 PM\nSat - Sun: Closed",
+        info: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
       },
     ],
     form: {
@@ -491,28 +490,25 @@ const defaultContent = {
     },
   },
   footer: {
-    description:
-      "Transforming operations with turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows.",
+    description: "Leading provider of digital transformation solutions for logistics and supply chain management.",
     quickLinks: {
       title: "Quick Links",
       items: [
         { href: "/", label: "Home" },
         { href: "/services", label: "Services" },
-        { href: "/why-us", label: "Why Us" },
-        { href: "/case-studies", label: "Case Studies" },
-        { href: "/blog", label: "Blog" },
+        { href: "/why-us", label: "About" },
         { href: "/contact", label: "Contact" },
       ],
     },
     contact: {
       title: "Contact",
-      items: ["123 Business District", "Tech City, TC 12345", "+1 (555) 123-4567", "hello@myworkapp.io"],
+      items: ["123 Business Street", "City, State 12345", "+1 (555) 123-4567", "info@myworkapp.com"],
     },
     legal: [
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/terms", label: "Terms of Service" },
     ],
-    copyright: "© {year} MyWorkApp.io. All rights reserved.",
+    copyright: "© {year} MyWorkApp. All rights reserved.",
   },
   supplyChain: {
     title: "Our End-to-End Supply Chain Solution",
@@ -553,35 +549,32 @@ const CMS_KEY = "cms-content"
 export async function GET() {
   try {
     // Try to get content from KV store
-    const storedContent = await kv.get(CMS_KEY)
+    const content = await kv.get(CMS_KEY)
 
-    if (storedContent) {
-      return NextResponse.json(storedContent)
+    if (content) {
+      return NextResponse.json(content)
     }
 
-    // If no stored content, save and return default content
+    // If no content in KV, return default and save it
     await kv.set(CMS_KEY, defaultContent)
     return NextResponse.json(defaultContent)
   } catch (error) {
     console.error("Error fetching CMS content:", error)
-    // Fallback to default content if KV fails
+    // If KV fails, return default content
     return NextResponse.json(defaultContent)
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const newContent = await request.json()
+    const content = await request.json()
 
     // Save to KV store
-    await kv.set(CMS_KEY, newContent)
+    await kv.set(CMS_KEY, content)
 
-    return NextResponse.json({
-      success: true,
-      message: "Content updated successfully and saved to database.",
-    })
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error updating CMS content:", error)
-    return NextResponse.json({ error: "Failed to update CMS content" }, { status: 500 })
+    console.error("Error saving CMS content:", error)
+    return NextResponse.json({ error: "Failed to save content" }, { status: 500 })
   }
 }

@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['sharp'],
-  },
+  reactStrictMode: true,
+  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -19,14 +18,8 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // Remove any client-side environment variable exposure
-  env: {},
-  // Ensure sensitive variables stay server-side only
-  serverRuntimeConfig: {
-    // Server-side only variables
-  },
-  publicRuntimeConfig: {
-    // Only public variables here
+  experimental: {
+    serverComponentsExternalPackages: ['sharp'],
   },
 }
 
