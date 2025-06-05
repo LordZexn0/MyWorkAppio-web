@@ -4,22 +4,23 @@ import { kv } from "@vercel/kv"
 // Default CMS content - this will be used as the base content
 const defaultContent = {
   site: {
-    name: "MyWorkApp",
+    name: "MyWorkApp.io",
     logo: "/images/logo-transparent.png",
-    description: "Innovative digital solutions for modern businesses",
-    tagline: "Transform your operations with cutting-edge technology",
+    description:
+      "End-to-end turnkey solutions for logistics, warehouse management, IoT tracking, and custom workflows.",
+    tagline: "Modern Solutions For Tomorrow's Challenges",
     contact: {
-      address: "123 Business Street\nSuite 100\nCity, State 12345",
+      address: "123 Business District\nTech City, TC 12345",
       phone: "+1 (555) 123-4567",
-      email: "info@myworkapp.com",
-      businessHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+      email: "hello@myworkapp.io",
+      businessHours: "Mon - Fri: 9:00 AM - 6:00 PM\nSat - Sun: Closed",
     },
   },
   navigation: {
     items: [
       { href: "/", label: "Home" },
       { href: "/services", label: "Services" },
-      { href: "/why-us", label: "About" },
+      { href: "/why-us", label: "Why Us" },
       { href: "/case-studies", label: "Case Studies" },
       { href: "/blog", label: "Blog" },
       { href: "/contact", label: "Contact" },
@@ -28,12 +29,12 @@ const defaultContent = {
   },
   home: {
     hero: {
-      title: "Transform Your Business Operations",
-      subtitle: "Streamline, Automate, and Optimize",
+      title: "MyWorkApp.io",
+      subtitle: "Modern Solutions For Tomorrow's Challenges",
       description:
-        "We deliver turnkey digital solutions that revolutionize how you manage logistics, warehouses, and supply chains.",
-      primaryButton: "Get Started",
-      secondaryButton: "Watch Demo",
+        "Transform your operations with our turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows.",
+      primaryButton: "Explore Our Services",
+      secondaryButton: "View Case Studies",
     },
     stats: [
       { number: "500+", label: "Projects Completed" },
@@ -431,7 +432,7 @@ const defaultContent = {
       {
         icon: "MapPin",
         title: "Office Location",
-        info: "123 Business Street\nSuite 100\nCity, State 12345",
+        info: "123 Business District\nTech City, TC 12345",
       },
       {
         icon: "Phone",
@@ -441,12 +442,12 @@ const defaultContent = {
       {
         icon: "Mail",
         title: "Email",
-        info: "info@myworkapp.com",
+        info: "hello@myworkapp.io",
       },
       {
         icon: "Clock",
         title: "Business Hours",
-        info: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+        info: "Mon - Fri: 9:00 AM - 6:00 PM\nSat - Sun: Closed",
       },
     ],
     form: {
@@ -490,25 +491,28 @@ const defaultContent = {
     },
   },
   footer: {
-    description: "Leading provider of digital transformation solutions for logistics and supply chain management.",
+    description:
+      "Transforming operations with turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows.",
     quickLinks: {
       title: "Quick Links",
       items: [
         { href: "/", label: "Home" },
         { href: "/services", label: "Services" },
-        { href: "/why-us", label: "About" },
+        { href: "/why-us", label: "Why Us" },
+        { href: "/case-studies", label: "Case Studies" },
+        { href: "/blog", label: "Blog" },
         { href: "/contact", label: "Contact" },
       ],
     },
     contact: {
       title: "Contact",
-      items: ["123 Business Street", "City, State 12345", "+1 (555) 123-4567", "info@myworkapp.com"],
+      items: ["123 Business District", "Tech City, TC 12345", "+1 (555) 123-4567", "hello@myworkapp.io"],
     },
     legal: [
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/terms", label: "Terms of Service" },
     ],
-    copyright: "© {year} MyWorkApp. All rights reserved.",
+    copyright: "© {year} MyWorkApp.io. All rights reserved.",
   },
   supplyChain: {
     title: "Our End-to-End Supply Chain Solution",

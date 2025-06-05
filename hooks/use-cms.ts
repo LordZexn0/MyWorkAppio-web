@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 interface CMSContent {
   site: {
@@ -120,49 +120,12 @@ const defaultContent: CMSContent = {
 }
 
 export function useCMS() {
-  const [content, setContent] = useState<CMSContent>(defaultContent)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading] = useState(false)
 
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const response = await fetch("/api/cms")
-        if (response.ok) {
-          const data = await response.json()
-          setContent(data)
-        }
-      } catch (error) {
-        console.error("Failed to fetch CMS content:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchContent()
-  }, [])
-
-  const updateContent = async (newContent: CMSContent) => {
-    try {
-      const response = await fetch("/api/cms", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newContent),
-      })
-
-      if (response.ok) {
-        setContent(newContent)
-        return true
-      }
-      return false
-    } catch (error) {
-      console.error("Failed to update CMS content:", error)
-      return false
-    }
+  return {
+    content: defaultContent,
+    isLoading,
   }
-
-  return { content, isLoading, updateContent }
 }
 
 export function useCMSSection<K extends keyof CMSContent>(section: K) {

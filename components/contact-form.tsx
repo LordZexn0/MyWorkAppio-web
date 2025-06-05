@@ -1,144 +1,75 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Send, CheckCircle } from "lucide-react"
+import { useState } from "react"
+import { Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import emailjs from "@emailjs/browser"
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
-  const formRef = useRef<HTMLFormElement>(null)
-  const [selectedServices, setSelectedServices] = useState<string[]>([])
+  const [selectedServices, setSelectedServices] = useState([])
 
-  useEffect(() => {
-    // Initialize EmailJS
-    emailjs.init("LZZ5ipyB4DIFG4QkQ")
-  }, [])
-
-  const validateForm = () => {
-    const errors: Record<string, string> = {}
-    const form = formRef.current
-
-    if (!form) return false
-
-    const name = form.name.value
-    const email = form.email.value
-    const phone = form.phone.value
-    const message = form.message.value
-
-    if (!name.trim()) errors.name = "Name is required"
-    if (!email.trim()) errors.email = "Email is required"
-    else if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = "Email is invalid"
-    if (!phone.trim()) errors.phone = "Phone number is required"
-    if (!message.trim()) errors.message = "Message is required"
-
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-
-    if (!validateForm()) return
-
     setIsSubmitting(true)
 
-    try {
-      // Prepare form data with selected services
-      if (formRef.current) {
-        // Create template parameters object - use field names that match your EmailJS template variables
-        const templateParams = {
-          from_name: formRef.current.name.value,
-          from_email: formRef.current.email.value,
-          phone_number: formRef.current.phone.value,
-          company: formRef.current.company.value || "Not provided",
-          selected_services: selectedServices.length > 0 ? selectedServices.join(", ") : "No services selected",
-          message: formRef.current.message.value,
-          // Add these fields explicitly to ensure they appear in the email
-          name: formRef.current.name.value,
-          email: formRef.current.email.value,
-          phone: formRef.current.phone.value,
-          services: selectedServices.length > 0 ? selectedServices.join(", ") : "No services selected",
-        }
-
-        console.log("Sending form data:", templateParams)
-
-        // Send email using EmailJS with explicit template parameters
-        await emailjs.send("service_j44x4lk", "template_6rmkeos", templateParams, "LZZ5ipyB4DIFG4QkQ")
-      }
-
+    // Simulate form submission
+    setTimeout(() => {
       setIsSubmitted(true)
-      formRef.current?.reset()
-      setSelectedServices([])
-    } catch (error) {
-      console.error("Error sending email:", error)
-      alert("There was an error sending your message. Please try again.")
-    } finally {
       setIsSubmitting(false)
-    }
+    }, 1500)
   }
 
-  const toggleService = (service: string) => {
-    setSelectedServices((prev) => (prev.includes(service) ? prev.filter((s) => s !== service) : [...prev, service]))
+  const toggleService = (service) => {
+    if (selectedServices.includes(service)) {
+      setSelectedServices(selectedServices.filter((s) => s !== service))
+    } else {
+      setSelectedServices([...selectedServices, service])
+    }
   }
 
   return (
     <section className="w-full py-16 px-4 md:px-8 bg-white">
       <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-heading text-[#FF6B35]">Send Us a Message</h2>
-          <div className="h-px w-20 bg-[#FFCF40] mx-auto mb-6"></div>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-heading text-orange-500">Send Us a Message</h2>
+          <div className="h-px w-20 bg-yellow-400 mx-auto mb-6"></div>
           <p className="max-w-2xl mx-auto text-gray-600">
-            Fill out the form below and we'll get back to you within 24 hours.
+            Fill out the form below and we&apos;ll get back to you within 24 hours.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+        <div>
           {isSubmitted ? (
             <div className="bg-white p-8 rounded-lg border border-gray-200 text-center max-w-2xl mx-auto">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                className="mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-[#FFCF40]/10"
-              >
-                <CheckCircle className="h-10 w-10 text-[#FF6B35]" />
-              </motion.div>
-              <h3 className="text-2xl font-bold mb-4 font-heading text-[#FF6B35]">Message Sent!</h3>
+              <div className="mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-yellow-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-10 w-10 text-orange-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 font-heading text-orange-500">Message Sent!</h3>
               <p className="text-gray-600 mb-6">
-                Thank you for reaching out. We'll get back to you as soon as possible.
+                Thank you for reaching out. We&apos;ll get back to you as soon as possible.
               </p>
               <Button
                 onClick={() => setIsSubmitted(false)}
-                className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none"
+                className="bg-orange-500 hover:bg-orange-600 text-white rounded-none"
               >
                 Send Another Message
               </Button>
             </div>
           ) : (
-            <form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              className="bg-white p-8 rounded-lg border border-gray-200 shadow-sm"
-            >
+            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg border border-gray-200 shadow-sm">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Left Column */}
                 <div className="space-y-4">
@@ -148,11 +79,9 @@ export default function ContactForm() {
                       id="name"
                       name="name"
                       placeholder="Your full name"
-                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                        formErrors.name ? "border-red-500" : ""
-                      }`}
+                      className="bg-white border-gray-300 focus:border-yellow-400 rounded-none"
+                      required
                     />
-                    {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
                   </div>
 
                   <div>
@@ -162,11 +91,9 @@ export default function ContactForm() {
                       name="email"
                       type="email"
                       placeholder="Your email address"
-                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                        formErrors.email ? "border-red-500" : ""
-                      }`}
+                      className="bg-white border-gray-300 focus:border-yellow-400 rounded-none"
+                      required
                     />
-                    {formErrors.email && <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>}
                   </div>
 
                   <div>
@@ -175,7 +102,7 @@ export default function ContactForm() {
                       id="company"
                       name="company"
                       placeholder="Your company name"
-                      className="bg-white border-gray-300 focus:border-[#FFCF40] rounded-none"
+                      className="bg-white border-gray-300 focus:border-yellow-400 rounded-none"
                     />
                   </div>
 
@@ -186,11 +113,9 @@ export default function ContactForm() {
                       name="phone"
                       type="tel"
                       placeholder="Your phone number"
-                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                        formErrors.phone ? "border-red-500" : ""
-                      }`}
+                      className="bg-white border-gray-300 focus:border-yellow-400 rounded-none"
+                      required
                     />
-                    {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
                   </div>
                 </div>
 
@@ -203,11 +128,9 @@ export default function ContactForm() {
                       name="message"
                       placeholder="Tell us about your project or requirements"
                       rows={6}
-                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none resize-none ${
-                        formErrors.message ? "border-red-500" : ""
-                      }`}
+                      className="bg-white border-gray-300 focus:border-yellow-400 rounded-none resize-none"
+                      required
                     />
-                    {formErrors.message && <p className="text-red-500 text-sm mt-1">{formErrors.message}</p>}
                   </div>
 
                   <div>
@@ -224,7 +147,7 @@ export default function ContactForm() {
                             id={service}
                             checked={selectedServices.includes(service)}
                             onCheckedChange={() => toggleService(service)}
-                            className="border-[#FFCF40] data-[state=checked]:bg-[#FF6B35] data-[state=checked]:border-[#FF6B35]"
+                            className="border-yellow-400 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
                           />
                           <Label htmlFor={service} className="font-normal cursor-pointer text-sm">
                             {service}
@@ -240,7 +163,7 @@ export default function ContactForm() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white py-3 px-8 rounded-none"
+                  className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-none"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">
@@ -276,7 +199,7 @@ export default function ContactForm() {
               </div>
             </form>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

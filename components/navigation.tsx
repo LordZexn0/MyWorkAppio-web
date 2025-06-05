@@ -20,12 +20,12 @@ export default function Navigation() {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white bg-opacity-90 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <img src="/images/logo-transparent.png" alt="MyWorkApp.io Logo" className="h-10 w-auto" />
+            <img src="/images/logo.png" alt="MyWorkApp.io Logo" width={50} height={50} className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -34,15 +34,15 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors hover:text-[#FF6B35] ${
-                  pathname === item.href ? "text-[#FF6B35]" : "text-gray-700"
+                className={`text-sm font-medium transition-colors hover:text-orange-500 ${
+                  pathname === item.href ? "text-orange-500" : "text-gray-700"
                 }`}
               >
                 {item.label}
               </Link>
             ))}
             <Link href="/contact">
-              <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">Get Started</Button>
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-none">Get Started</Button>
             </Link>
           </div>
 
@@ -62,8 +62,8 @@ export default function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block px-3 py-2 text-base font-medium transition-colors hover:text-[#FF6B35] ${
-                    pathname === item.href ? "text-[#FF6B35]" : "text-gray-700"
+                  className={`block px-3 py-2 text-base font-medium transition-colors hover:text-orange-500 ${
+                    pathname === item.href ? "text-orange-500" : "text-gray-700"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -72,7 +72,7 @@ export default function Navigation() {
               ))}
               <div className="px-3 py-2">
                 <Link href="/contact">
-                  <Button className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">
+                  <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-none">
                     Get Started
                   </Button>
                 </Link>

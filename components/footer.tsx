@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 
 export default function Footer() {
@@ -12,7 +10,7 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="md:col-span-2">
             <div className="flex items-center mb-4">
-              <img src="/images/logo-transparent.png" alt="MyWorkApp.io Logo" className="h-10 w-auto mr-3" />
+              <img src="/images/logo-transparent.png" alt="MyWorkApp Logo" className="h-10 w-auto mr-3" />
               <span className="text-xl font-bold">MyWorkApp.io</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
@@ -24,7 +22,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4 text-[#FFCF40]">Quick Links</h3>
+            <h3 className="font-semibold mb-4 text-yellow-400">Quick Links</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-gray-400 hover:text-white transition-colors">
@@ -42,16 +40,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/case-studies" className="text-gray-400 hover:text-white transition-colors">
-                  Case Studies
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
                 <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
                   Contact
                 </Link>
@@ -61,7 +49,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="font-semibold mb-4 text-[#FFCF40]">Contact</h3>
+            <h3 className="font-semibold mb-4 text-yellow-400">Contact</h3>
             <ul className="space-y-2 text-gray-400">
               <li>123 Business District</li>
               <li>Tech City, TC 12345</li>
