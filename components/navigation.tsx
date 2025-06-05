@@ -5,17 +5,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCMSSection } from "@/hooks/use-cms"
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-  const { content: siteContent } = useCMSSection("site")
-  const { content: navContent } = useCMSSection("navigation")
 
-  const siteName = siteContent?.name || "MyWorkApp.io"
-  const siteLogo = siteContent?.logo || "/images/logo-transparent.png"
-  const navItems = navContent?.items || [
+  const navItems = [
     { href: "/", label: "Home" },
     { href: "/services", label: "Services" },
     { href: "/why-us", label: "Why Us" },
@@ -23,7 +18,6 @@ export default function Navigation() {
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
   ]
-  const ctaButton = navContent?.ctaButton || "Get Started"
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm">
@@ -31,7 +25,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <img src={siteLogo || "/placeholder.svg"} alt={`${siteName} Logo`} className="h-10 w-auto" />
+            <img src="/images/logo-transparent.png" alt="MyWorkApp.io Logo" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,7 +42,7 @@ export default function Navigation() {
               </Link>
             ))}
             <Link href="/contact">
-              <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">{ctaButton}</Button>
+              <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">Get Started</Button>
             </Link>
           </div>
 
@@ -79,7 +73,7 @@ export default function Navigation() {
               <div className="px-3 py-2">
                 <Link href="/contact">
                   <Button className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white rounded-none">
-                    {ctaButton}
+                    Get Started
                   </Button>
                 </Link>
               </div>

@@ -120,7 +120,7 @@ const defaultContent: CMSContent = {
 }
 
 export function useCMS() {
-  const [content, setContent] = useState<CMSContent | null>(null)
+  const [content, setContent] = useState<CMSContent>(defaultContent)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -130,12 +130,9 @@ export function useCMS() {
         if (response.ok) {
           const data = await response.json()
           setContent(data)
-        } else {
-          setContent(defaultContent)
         }
       } catch (error) {
         console.error("Failed to fetch CMS content:", error)
-        setContent(defaultContent)
       } finally {
         setIsLoading(false)
       }
@@ -165,14 +162,14 @@ export function useCMS() {
     }
   }
 
-  return { content: content || defaultContent, isLoading, updateContent }
+  return { content, isLoading, updateContent }
 }
 
 export function useCMSSection<K extends keyof CMSContent>(section: K) {
   const { content, isLoading } = useCMS()
 
   return {
-    content: content ? content[section] : defaultContent[section],
+    content: content[section],
     isLoading,
   }
 }

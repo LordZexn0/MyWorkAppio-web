@@ -4,28 +4,8 @@ import { motion } from "framer-motion"
 import { ArrowRight, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useCMSSection } from "@/hooks/use-cms"
 
 export default function HeroSection() {
-  const { content: homeContent, isLoading } = useCMSSection("home")
-
-  // Show loading state or default content
-  if (isLoading || !homeContent) {
-    return (
-      <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-orange-50">
-        <div className="text-center">
-          <div className="animate-pulse">
-            <div className="h-16 bg-gray-200 rounded mb-4 w-96"></div>
-            <div className="h-8 bg-gray-200 rounded mb-4 w-80"></div>
-            <div className="h-6 bg-gray-200 rounded w-64"></div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const { hero, stats } = homeContent
-
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-orange-50">
       {/* Animated background elements */}
@@ -44,14 +24,14 @@ export default function HeroSection() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 font-heading text-[#0F4C81]">
-            <span className="block">{hero?.title || "MyWorkApp.io"}</span>
+            <span className="block">MyWorkApp.io</span>
           </h1>
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-black mb-8 max-w-3xl mx-auto">
-            {hero?.subtitle || "Modern Solutions For Tomorrow's Challenges"}
+            Modern Solutions For Tomorrow&apos;s Challenges
           </p>
           <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            {hero?.description ||
-              "Transform your operations with our turnkey solutions for logistics, warehouse management, IoT tracking, and custom digital workflows."}
+            Transform your operations with our turnkey solutions for logistics, warehouse management, IoT tracking, and
+            custom digital workflows.
           </p>
         </motion.div>
 
@@ -63,7 +43,7 @@ export default function HeroSection() {
         >
           <Link href="/services">
             <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white px-8 py-6 rounded-none text-lg font-medium">
-              {hero?.primaryButton || "Explore Our Services"}
+              Explore Our Services
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
@@ -73,7 +53,7 @@ export default function HeroSection() {
               className="border-[#0F4C81] text-[#0F4C81] hover:bg-[#0F4C81] hover:text-white px-8 py-6 rounded-none text-lg font-medium"
             >
               <Play className="mr-2 h-5 w-5" />
-              {hero?.secondaryButton || "View Case Studies"}
+              View Case Studies
             </Button>
           </Link>
         </motion.div>
@@ -85,13 +65,11 @@ export default function HeroSection() {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-4xl mx-auto"
         >
-          {(
-            stats || [
-              { number: "500+", label: "Projects Completed" },
-              { number: "99%", label: "Client Satisfaction" },
-              { number: "24/7", label: "Support Available" },
-            ]
-          ).map((stat, index) => (
+          {[
+            { number: "500+", label: "Projects Completed" },
+            { number: "99%", label: "Client Satisfaction" },
+            { number: "24/7", label: "Support Available" },
+          ].map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-[#FF6B35] mb-2">{stat.number}</div>
               <div className="text-gray-600">{stat.label}</div>
