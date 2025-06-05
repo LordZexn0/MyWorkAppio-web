@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowRight, Play } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useCMSSection } from "@/hooks/use-cms"
@@ -43,21 +43,12 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="flex justify-center"
         >
           <Link href="/services">
             <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white px-8 py-6 rounded-none text-lg font-medium">
               {hero.primaryButton}
               <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <Link href="/case-studies">
-            <Button
-              variant="outline"
-              className="border-[#0F4C81] text-[#0F4C81] hover:bg-[#0F4C81] hover:text-white px-8 py-6 rounded-none text-lg font-medium"
-            >
-              <Play className="mr-2 h-5 w-5" />
-              {hero.secondaryButton}
             </Button>
           </Link>
         </motion.div>

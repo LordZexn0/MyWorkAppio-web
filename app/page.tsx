@@ -89,6 +89,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Supply Chain Animation Section */}
         <SupplyChainAnimation />
 
         {/* CTA Section */}

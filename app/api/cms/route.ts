@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
+import { kv } from "@vercel/kv"
 
-// Default CMS content - this will be used if the file doesn't exist
+// Default CMS content - this will be used as the base content
 const defaultContent = {
   site: {
     name: "MyWorkApp.io",
@@ -547,15 +548,24 @@ const defaultContent = {
   },
 }
 
-// In-memory storage for content changes (this will reset on each deployment)
-let currentContent = defaultContent
+const CMS_KEY = "cms-content"
 
 export async function GET() {
   try {
-    return NextResponse.json(currentContent)
+    // Try to get content from KV store
+    const storedContent = await kv.get(CMS_KEY)
+
+    if (storedContent) {
+      return NextResponse.json(storedContent)
+    }
+
+    // If no stored content, save and return default content
+    await kv.set(CMS_KEY, defaultContent)
+    return NextResponse.json(defaultContent)
   } catch (error) {
     console.error("Error fetching CMS content:", error)
-    return NextResponse.json({ error: "Failed to fetch CMS content" }, { status: 500 })
+    // Fallback to default content if KV fails
+    return NextResponse.json(defaultContent)
   }
 }
 
@@ -563,15 +573,12 @@ export async function POST(request: Request) {
   try {
     const newContent = await request.json()
 
-    // Update the in-memory content
-    currentContent = newContent
-
-    // Note: In a production environment, you would want to save this to a database
-    // For now, changes will persist until the next deployment
+    // Save to KV store
+    await kv.set(CMS_KEY, newContent)
 
     return NextResponse.json({
       success: true,
-      message: "Content updated successfully. Note: Changes will reset on next deployment.",
+      message: "Content updated successfully and saved to database.",
     })
   } catch (error) {
     console.error("Error updating CMS content:", error)

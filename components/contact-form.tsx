@@ -92,19 +92,18 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="w-full min-h-screen bg-white py-20 px-4 md:px-8">
-      <div className="max-w-3xl mx-auto">
+    <section className="w-full py-16 px-4 md:px-8 bg-white">
+      <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 font-heading text-[#FF6B35]">Get In Touch</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-heading text-[#FF6B35]">Send Us a Message</h2>
           <div className="h-px w-20 bg-[#FFCF40] mx-auto mb-6"></div>
           <p className="max-w-2xl mx-auto text-gray-600">
-            Ready to transform your operations with our turnkey solutions? Contact us today to discuss how we can help
-            streamline your business processes.
+            Fill out the form below and we'll get back to you within 24 hours.
           </p>
         </motion.div>
 
@@ -114,12 +113,12 @@ export default function ContactForm() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           {isSubmitted ? (
-            <div className="bg-white p-8 rounded-none border border-gray-200 text-center">
+            <div className="bg-white p-8 rounded-lg border border-gray-200 text-center max-w-2xl mx-auto">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                className="mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-none bg-[#FFCF40]/10"
+                className="mb-6 mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-[#FFCF40]/10"
               >
                 <CheckCircle className="h-10 w-10 text-[#FF6B35]" />
               </motion.div>
@@ -135,129 +134,113 @@ export default function ContactForm() {
               </Button>
             </div>
           ) : (
-            <form ref={formRef} onSubmit={handleSubmit} className="bg-white p-8 rounded-none border border-gray-200">
-              <h3 className="text-2xl font-bold mb-6 font-heading text-[#FF6B35]">Send Us a Message</h3>
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="bg-white p-8 rounded-lg border border-gray-200 shadow-sm"
+            >
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Name *</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder="Your full name"
+                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
+                        formErrors.name ? "border-red-500" : ""
+                      }`}
+                    />
+                    {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
+                  </div>
 
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="Your full name"
-                    className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                      formErrors.name ? "border-red-500" : ""
-                    }`}
-                  />
-                  {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
-                </div>
+                  <div>
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Your email address"
+                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
+                        formErrors.email ? "border-red-500" : ""
+                      }`}
+                    />
+                    {formErrors.email && <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>}
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="Your email address"
-                    className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                      formErrors.email ? "border-red-500" : ""
-                    }`}
-                  />
-                  {formErrors.email && <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>}
-                </div>
+                  <div>
+                    <Label htmlFor="company">Company (Optional)</Label>
+                    <Input
+                      id="company"
+                      name="company"
+                      placeholder="Your company name"
+                      className="bg-white border-gray-300 focus:border-[#FFCF40] rounded-none"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="company">Company (Optional)</Label>
-                  <Input
-                    id="company"
-                    name="company"
-                    placeholder="Your company name"
-                    className="bg-white border-gray-300 focus:border-[#FFCF40] rounded-none"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="Your phone number"
-                    className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                      formErrors.phone ? "border-red-500" : ""
-                    }`}
-                  />
-                  {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Services of Interest (Optional)</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="logistics"
-                        checked={selectedServices.includes("Logistics and Supply Chain Management")}
-                        onCheckedChange={() => toggleService("Logistics and Supply Chain Management")}
-                        className="border-[#FFCF40] data-[state=checked]:bg-[#FF6B35] data-[state=checked]:border-[#FF6B35]"
-                      />
-                      <Label htmlFor="logistics" className="font-normal cursor-pointer">
-                        Logistics and Supply Chain
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="warehouse"
-                        checked={selectedServices.includes("Digital Warehouse Management")}
-                        onCheckedChange={() => toggleService("Digital Warehouse Management")}
-                        className="border-[#FFCF40] data-[state=checked]:bg-[#FF6B35] data-[state=checked]:border-[#FF6B35]"
-                      />
-                      <Label htmlFor="warehouse" className="font-normal cursor-pointer">
-                        Digital Warehouse Management
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="iot"
-                        checked={selectedServices.includes("IoT Sensors and Tracking")}
-                        onCheckedChange={() => toggleService("IoT Sensors and Tracking")}
-                        className="border-[#FFCF40] data-[state=checked]:bg-[#FF6B35] data-[state=checked]:border-[#FF6B35]"
-                      />
-                      <Label htmlFor="iot" className="font-normal cursor-pointer">
-                        IoT Sensors and Tracking
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="workflow"
-                        checked={selectedServices.includes("Custom Digital Workflow Development")}
-                        onCheckedChange={() => toggleService("Custom Digital Workflow Development")}
-                        className="border-[#FFCF40] data-[state=checked]:bg-[#FF6B35] data-[state=checked]:border-[#FF6B35]"
-                      />
-                      <Label htmlFor="workflow" className="font-normal cursor-pointer">
-                        Custom Digital Workflow
-                      </Label>
-                    </div>
+                  <div>
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Your phone number"
+                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
+                        formErrors.phone ? "border-red-500" : ""
+                      }`}
+                    />
+                    {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message *</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Tell us about your project or requirements"
-                    rows={5}
-                    className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none ${
-                      formErrors.message ? "border-red-500" : ""
-                    }`}
-                  />
-                  {formErrors.message && <p className="text-red-500 text-sm mt-1">{formErrors.message}</p>}
-                </div>
+                {/* Right Column */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="message">Message *</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      placeholder="Tell us about your project or requirements"
+                      rows={6}
+                      className={`bg-white border-gray-300 focus:border-[#FFCF40] rounded-none resize-none ${
+                        formErrors.message ? "border-red-500" : ""
+                      }`}
+                    />
+                    {formErrors.message && <p className="text-red-500 text-sm mt-1">{formErrors.message}</p>}
+                  </div>
 
+                  <div>
+                    <Label className="text-sm font-medium">Services of Interest (Optional)</Label>
+                    <div className="grid grid-cols-1 gap-3 mt-2">
+                      {[
+                        "Logistics and Supply Chain Management",
+                        "Digital Warehouse Management",
+                        "IoT Sensors and Tracking",
+                        "Custom Digital Workflow Development",
+                      ].map((service) => (
+                        <div key={service} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={service}
+                            checked={selectedServices.includes(service)}
+                            onCheckedChange={() => toggleService(service)}
+                            className="border-[#FFCF40] data-[state=checked]:bg-[#FF6B35] data-[state=checked]:border-[#FF6B35]"
+                          />
+                          <Label htmlFor={service} className="font-normal cursor-pointer text-sm">
+                            {service}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center">
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white py-6 rounded-none"
+                  className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white py-3 px-8 rounded-none"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">

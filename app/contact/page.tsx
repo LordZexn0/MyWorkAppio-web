@@ -1,100 +1,155 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import Navigation from "@/components/navigation"
-import ContactForm from "@/components/contact-form"
-import Footer from "@/components/footer"
+import { motion } from "framer-motion"
 import { MapPin, Phone, Mail, Clock } from "lucide-react"
-import LoadingScreen from "@/components/loading-screen"
+import ContactForm from "@/components/contact-form"
+import { useCMS } from "@/hooks/use-cms"
 
 export default function ContactPage() {
-  const [isLoading, setIsLoading] = useState(true)
+  const { content } = useCMS()
+  const [mounted, setMounted] = useState(false)
 
-  const handleLoadingComplete = () => {
-    setIsLoading(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted || !content) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#FF6B35]"></div>
+      </div>
+    )
   }
 
-  // Prevent scrolling during loading
-  useEffect(() => {
-    if (isLoading) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-
-    return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [isLoading])
+  const contactData = content.contact
+  const siteContact = content.site.contact
 
   return (
-    <>
-      <AnimatePresence>{isLoading && <LoadingScreen onLoadingComplete={handleLoadingComplete} />}</AnimatePresence>
-      <Navigation />
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-[#0F4C81] to-[#1a5490] text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 font-heading">{contactData.hero.title}</h1>
+            <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">{contactData.hero.description}</p>
+          </motion.div>
+        </div>
+      </section>
 
-      <main className="pt-16 bg-white text-gray-900">
-        {/* Hero Section */}
-        <section className="py-20 px-4 md:px-8 bg-gradient-to-br from-blue-50 to-orange-50">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 font-heading text-[#0F4C81]">Get In Touch</h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Ready to transform your operations? Let's discuss how our turnkey solutions can help your business.
-              </p>
+      {/* Main Content */}
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Form - Now First */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="order-1"
+            >
+              <div className="bg-white rounded-2xl shadow-xl p-8">
+                <h2 className="text-2xl font-bold text-[#0F4C81] mb-6">{contactData.form.title}</h2>
+                <ContactForm />
+              </div>
+            </motion.div>
+
+            {/* Contact Information - Now Second */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="order-2"
+            >
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#0F4C81] mb-6">Get in Touch</h2>
+                  <p className="text-gray-600 text-lg leading-relaxed">
+                    Ready to transform your business operations? Contact us today to discuss your specific needs and
+                    discover how our solutions can drive your success.
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Address */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    className="flex items-start space-x-4 p-4 bg-white rounded-lg shadow-md"
+                  >
+                    <div className="w-12 h-12 bg-[#0F4C81] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#0F4C81] mb-1">Address</h3>
+                      <p className="text-gray-600 whitespace-pre-line">{siteContact.address}</p>
+                    </div>
+                  </motion.div>
+
+                  {/* Phone */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.7 }}
+                    className="flex items-start space-x-4 p-4 bg-white rounded-lg shadow-md"
+                  >
+                    <div className="w-12 h-12 bg-[#FF6B35] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#0F4C81] mb-1">Phone</h3>
+                      <a
+                        href={`tel:${siteContact.phone}`}
+                        className="text-gray-600 hover:text-[#FF6B35] transition-colors"
+                      >
+                        {siteContact.phone}
+                      </a>
+                    </div>
+                  </motion.div>
+
+                  {/* Email */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    className="flex items-start space-x-4 p-4 bg-white rounded-lg shadow-md"
+                  >
+                    <div className="w-12 h-12 bg-[#FFCF40] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#0F4C81] mb-1">Email</h3>
+                      <a
+                        href={`mailto:${siteContact.email}`}
+                        className="text-gray-600 hover:text-[#FF6B35] transition-colors"
+                      >
+                        {siteContact.email}
+                      </a>
+                    </div>
+                  </motion.div>
+
+                  {/* Business Hours */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.9 }}
+                    className="flex items-start space-x-4 p-4 bg-white rounded-lg shadow-md"
+                  >
+                    <div className="w-12 h-12 bg-[#0F4C81] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#0F4C81] mb-1">Business Hours</h3>
+                      <p className="text-gray-600 whitespace-pre-line">{siteContact.businessHours}</p>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
             </motion.div>
           </div>
-        </section>
-
-        {/* Contact Info */}
-        <section className="py-16 px-4 md:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-              {[
-                {
-                  icon: <MapPin className="w-6 h-6" />,
-                  title: "Office Location",
-                  info: "123 Business District\nTech City, TC 12345",
-                },
-                {
-                  icon: <Phone className="w-6 h-6" />,
-                  title: "Phone",
-                  info: "+1 (555) 123-4567",
-                },
-                {
-                  icon: <Mail className="w-6 h-6" />,
-                  title: "Email",
-                  info: "hello@myworkapp.io",
-                },
-                {
-                  icon: <Clock className="w-6 h-6" />,
-                  title: "Business Hours",
-                  info: "Mon - Fri: 9:00 AM - 6:00 PM\nSat - Sun: Closed",
-                },
-              ].map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="text-center p-6 border border-gray-200 hover:border-[#FFCF40] transition-colors"
-                >
-                  <div className="w-12 h-12 bg-[#FF6B35]/10 rounded-full flex items-center justify-center mx-auto mb-4 text-[#FF6B35]">
-                    {item.icon}
-                  </div>
-                  <h3 className="font-semibold text-[#0F4C81] mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm whitespace-pre-line">{item.info}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Form */}
-        <ContactForm />
-      </main>
-
-      <Footer />
-    </>
+        </div>
+      </section>
+    </div>
   )
 }

@@ -1,7 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
-import { Save, Eye, Plus, Trash2 } from "lucide-react"
+import { Save, Eye, Plus, Trash2, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,12 +11,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 import type { CMSContent } from "@/lib/cms"
 
 export default function AdminPanel() {
   const [content, setContent] = useState<CMSContent | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingImages, setUploadingImages] = useState<Record<string, boolean>>({})
   const { toast } = useToast()
 
   useEffect(() => {
@@ -52,14 +56,16 @@ export default function AdminPanel() {
       if (!response.ok) throw new Error("Failed to save content")
 
       toast({
-        title: "Success",
-        description: "Content saved successfully!",
+        title: "✅ Success",
+        description: "Content saved successfully! Changes are now live on your website.",
+        duration: 5000,
       })
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to save content",
+        title: "❌ Error",
+        description: "Failed to save content. Please try again.",
         variant: "destructive",
+        duration: 5000,
       })
     } finally {
       setSaving(false)
@@ -108,6 +114,42 @@ export default function AdminPanel() {
     setContent(newContent)
   }
 
+  const handleImageUpload = async (file: File, fieldId: string) => {
+    setUploadingImages((prev) => ({ ...prev, [fieldId]: true }))
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) throw new Error("Upload failed")
+
+      const { url } = await response.json()
+
+      toast({
+        title: "✅ Upload Success",
+        description: "Image uploaded successfully!",
+        duration: 3000,
+      })
+
+      return url
+    } catch (error) {
+      toast({
+        title: "❌ Upload Error",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      })
+      return null
+    } finally {
+      setUploadingImages((prev) => ({ ...prev, [fieldId]: false }))
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -134,8 +176,11 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Toast notifications with proper styling */}
+      <Toaster />
+
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -156,46 +201,65 @@ export default function AdminPanel() {
         </div>
       </div>
 
-      {/* Deployment Warning */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fillRule="evenodd"
-                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-yellow-800">Deployment Notice</h3>
-            <div className="mt-2 text-sm text-yellow-700">
-              <p>
-                Content changes will work during this session but will reset on the next deployment. For persistent
-                changes in production, consider using a database or external CMS.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Tabs defaultValue="site" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="site">Site Info</TabsTrigger>
-            <TabsTrigger value="home">Home</TabsTrigger>
-            <TabsTrigger value="services">Services</TabsTrigger>
-            <TabsTrigger value="why-us">Why Us</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-            <TabsTrigger value="blog">Blog</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
-          </TabsList>
+          {/* Improved Tab Design */}
+          <div className="bg-white rounded-lg shadow-sm border p-1">
+            <TabsList className="grid w-full grid-cols-7 bg-gray-50 rounded-md p-1 h-auto">
+              <TabsTrigger
+                value="site"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                🏢 Site Info
+              </TabsTrigger>
+              <TabsTrigger
+                value="home"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                🏠 Home
+              </TabsTrigger>
+              <TabsTrigger
+                value="services"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                ⚙️ Services
+              </TabsTrigger>
+              <TabsTrigger
+                value="why-us"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                ⭐ Why Us
+              </TabsTrigger>
+              <TabsTrigger
+                value="case-studies"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                📊 Case Studies
+              </TabsTrigger>
+              <TabsTrigger
+                value="blog"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                📝 Blog
+              </TabsTrigger>
+              <TabsTrigger
+                value="contact"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#FF6B35] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#FF6B35]/20 text-gray-600 hover:text-gray-900 py-3 px-4 rounded-md transition-all duration-200 font-medium"
+              >
+                📞 Contact
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Site Information */}
           <TabsContent value="site">
-            <SiteInfoEditor content={content.site} updateContent={updateContent} />
+            <SiteInfoEditor
+              content={content.site}
+              updateContent={updateContent}
+              handleImageUpload={handleImageUpload}
+              uploadingImages={uploadingImages}
+            />
           </TabsContent>
 
           {/* Home Page */}
@@ -210,6 +274,8 @@ export default function AdminPanel() {
               updateContent={updateContent}
               addArrayItem={addArrayItem}
               removeArrayItem={removeArrayItem}
+              handleImageUpload={handleImageUpload}
+              uploadingImages={uploadingImages}
             />
           </TabsContent>
 
@@ -230,6 +296,8 @@ export default function AdminPanel() {
               updateContent={updateContent}
               addArrayItem={addArrayItem}
               removeArrayItem={removeArrayItem}
+              handleImageUpload={handleImageUpload}
+              uploadingImages={uploadingImages}
             />
           </TabsContent>
 
@@ -240,6 +308,8 @@ export default function AdminPanel() {
               updateContent={updateContent}
               addArrayItem={addArrayItem}
               removeArrayItem={removeArrayItem}
+              handleImageUpload={handleImageUpload}
+              uploadingImages={uploadingImages}
             />
           </TabsContent>
 
@@ -253,8 +323,104 @@ export default function AdminPanel() {
   )
 }
 
+// Image Upload Component
+function ImageUpload({
+  value,
+  onChange,
+  fieldId,
+  handleImageUpload,
+  uploadingImages,
+}: {
+  value: string
+  onChange: (value: string) => void
+  fieldId: string
+  handleImageUpload: (file: File, fieldId: string) => Promise<string | null>
+  uploadingImages: Record<string, boolean>
+}) {
+  const [dragOver, setDragOver] = useState(false)
+
+  const handleFileSelect = async (file: File) => {
+    const url = await handleImageUpload(file, fieldId)
+    if (url) {
+      onChange(url)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith("image/")) {
+      handleFileSelect(file)
+    }
+  }
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      handleFileSelect(file)
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="/images/example.jpg"
+          className="flex-1"
+        />
+        <Button type="button" variant="outline" disabled={uploadingImages[fieldId]} className="relative">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileInput}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            disabled={uploadingImages[fieldId]}
+          />
+          {uploadingImages[fieldId] ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+          ) : (
+            <Upload className="w-4 h-4" />
+          )}
+        </Button>
+      </div>
+
+      <div
+        className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+          dragOver ? "border-[#FF6B35] bg-[#FF6B35]/5" : "border-gray-300"
+        }`}
+        onDragOver={(e) => {
+          e.preventDefault()
+          setDragOver(true)
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+      >
+        <p className="text-sm text-gray-600">Drag and drop an image here, or click the upload button above</p>
+      </div>
+
+      {value && (
+        <div className="relative inline-block">
+          <img src={value || "/placeholder.svg"} alt="Preview" className="max-w-32 max-h-32 object-cover rounded" />
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            className="absolute -top-2 -right-2 w-6 h-6 p-0"
+            onClick={() => onChange("")}
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // Site Info Editor Component
-function SiteInfoEditor({ content, updateContent }: any) {
+function SiteInfoEditor({ content, updateContent, handleImageUpload, uploadingImages }: any) {
   return (
     <div className="space-y-6">
       <Card>
@@ -291,12 +457,13 @@ function SiteInfoEditor({ content, updateContent }: any) {
             />
           </div>
           <div>
-            <Label htmlFor="site-logo">Logo Path</Label>
-            <Input
-              id="site-logo"
+            <Label htmlFor="site-logo">Logo</Label>
+            <ImageUpload
               value={content.logo}
-              onChange={(e) => updateContent(["site", "logo"], e.target.value)}
-              placeholder="/images/logo.png"
+              onChange={(value) => updateContent(["site", "logo"], value)}
+              fieldId="site-logo"
+              handleImageUpload={handleImageUpload}
+              uploadingImages={uploadingImages}
             />
           </div>
         </CardContent>
@@ -305,7 +472,7 @@ function SiteInfoEditor({ content, updateContent }: any) {
       <Card>
         <CardHeader>
           <CardTitle>Contact Information</CardTitle>
-          <CardDescription>Update your contact details</CardDescription>
+          <CardDescription>Update your contact details (syncs to footer and contact page)</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -350,7 +517,7 @@ function SiteInfoEditor({ content, updateContent }: any) {
   )
 }
 
-// Home Editor Component
+// Home Editor Component (unchanged)
 function HomeEditor({ content, updateContent }: any) {
   return (
     <div className="space-y-6">
@@ -385,23 +552,13 @@ function HomeEditor({ content, updateContent }: any) {
               rows={3}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="hero-primary-btn">Primary Button Text</Label>
-              <Input
-                id="hero-primary-btn"
-                value={content.hero.primaryButton}
-                onChange={(e) => updateContent(["home", "hero", "primaryButton"], e.target.value)}
-              />
-            </div>
-            <div>
-              <Label htmlFor="hero-secondary-btn">Secondary Button Text</Label>
-              <Input
-                id="hero-secondary-btn"
-                value={content.hero.secondaryButton}
-                onChange={(e) => updateContent(["home", "hero", "secondaryButton"], e.target.value)}
-              />
-            </div>
+          <div>
+            <Label htmlFor="hero-primary-btn">Primary Button Text</Label>
+            <Input
+              id="hero-primary-btn"
+              value={content.hero.primaryButton}
+              onChange={(e) => updateContent(["home", "hero", "primaryButton"], e.target.value)}
+            />
           </div>
         </CardContent>
       </Card>
@@ -446,8 +603,15 @@ function HomeEditor({ content, updateContent }: any) {
   )
 }
 
-// Services Editor Component
-function ServicesEditor({ content, updateContent, addArrayItem, removeArrayItem }: any) {
+// Services Editor Component with Image Upload
+function ServicesEditor({
+  content,
+  updateContent,
+  addArrayItem,
+  removeArrayItem,
+  handleImageUpload,
+  uploadingImages,
+}: any) {
   const addService = () => {
     const newService = {
       id: Date.now(),
@@ -552,16 +716,17 @@ function ServicesEditor({ content, updateContent, addArrayItem, removeArrayItem 
               </div>
 
               <div>
-                <Label htmlFor={`service-image-${index}`}>Image Path</Label>
-                <Input
-                  id={`service-image-${index}`}
+                <Label htmlFor={`service-image-${index}`}>Service Image</Label>
+                <ImageUpload
                   value={service.image}
-                  onChange={(e) => {
+                  onChange={(value) => {
                     const newServices = [...content.items]
-                    newServices[index].image = e.target.value
+                    newServices[index].image = value
                     updateContent(["services", "items"], newServices)
                   }}
-                  placeholder="/images/service.png"
+                  fieldId={`service-image-${index}`}
+                  handleImageUpload={handleImageUpload}
+                  uploadingImages={uploadingImages}
                 />
               </div>
 
@@ -600,7 +765,7 @@ function ServicesEditor({ content, updateContent, addArrayItem, removeArrayItem 
   )
 }
 
-// Why Us Editor Component
+// Why Us Editor Component (unchanged)
 function WhyUsEditor({ content, updateContent, addArrayItem, removeArrayItem }: any) {
   return (
     <div className="space-y-6">
@@ -682,8 +847,15 @@ function WhyUsEditor({ content, updateContent, addArrayItem, removeArrayItem }: 
   )
 }
 
-// Case Studies Editor Component
-function CaseStudiesEditor({ content, updateContent, addArrayItem, removeArrayItem }: any) {
+// Case Studies Editor Component with Image Upload
+function CaseStudiesEditor({
+  content,
+  updateContent,
+  addArrayItem,
+  removeArrayItem,
+  handleImageUpload,
+  uploadingImages,
+}: any) {
   const addCaseStudy = () => {
     const newCaseStudy = {
       id: Date.now(),
@@ -836,34 +1008,35 @@ function CaseStudiesEditor({ content, updateContent, addArrayItem, removeArrayIt
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor={`case-image-${index}`}>Image Path</Label>
-                  <Input
-                    id={`case-image-${index}`}
-                    value={study.image}
-                    onChange={(e) => {
-                      const newStudies = [...content.items]
-                      newStudies[index].image = e.target.value
-                      updateContent(["caseStudies", "items"], newStudies)
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor={`case-tags-${index}`}>Tags (comma separated)</Label>
-                  <Input
-                    id={`case-tags-${index}`}
-                    value={study.tags.join(", ")}
-                    onChange={(e) => {
-                      const newStudies = [...content.items]
-                      newStudies[index].tags = e.target.value
-                        .split(",")
-                        .map((t) => t.trim())
-                        .filter((t) => t)
-                      updateContent(["caseStudies", "items"], newStudies)
-                    }}
-                  />
-                </div>
+              <div>
+                <Label htmlFor={`case-image-${index}`}>Case Study Image</Label>
+                <ImageUpload
+                  value={study.image}
+                  onChange={(value) => {
+                    const newStudies = [...content.items]
+                    newStudies[index].image = value
+                    updateContent(["caseStudies", "items"], newStudies)
+                  }}
+                  fieldId={`case-image-${index}`}
+                  handleImageUpload={handleImageUpload}
+                  uploadingImages={uploadingImages}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor={`case-tags-${index}`}>Tags (comma separated)</Label>
+                <Input
+                  id={`case-tags-${index}`}
+                  value={study.tags.join(", ")}
+                  onChange={(e) => {
+                    const newStudies = [...content.items]
+                    newStudies[index].tags = e.target.value
+                      .split(",")
+                      .map((t) => t.trim())
+                      .filter((t) => t)
+                    updateContent(["caseStudies", "items"], newStudies)
+                  }}
+                />
               </div>
             </div>
           ))}
@@ -873,8 +1046,15 @@ function CaseStudiesEditor({ content, updateContent, addArrayItem, removeArrayIt
   )
 }
 
-// Blog Editor Component
-function BlogEditor({ content, updateContent, addArrayItem, removeArrayItem }: any) {
+// Blog Editor Component with Image Upload
+function BlogEditor({
+  content,
+  updateContent,
+  addArrayItem,
+  removeArrayItem,
+  handleImageUpload,
+  uploadingImages,
+}: any) {
   const addBlogPost = () => {
     const newPost = {
       id: Date.now(),
@@ -1032,15 +1212,17 @@ function BlogEditor({ content, updateContent, addArrayItem, removeArrayItem }: a
                   />
                 </div>
                 <div>
-                  <Label htmlFor={`post-image-${index}`}>Image Path</Label>
-                  <Input
-                    id={`post-image-${index}`}
+                  <Label htmlFor={`post-image-${index}`}>Blog Post Image</Label>
+                  <ImageUpload
                     value={post.image}
-                    onChange={(e) => {
+                    onChange={(value) => {
                       const newPosts = [...content.posts]
-                      newPosts[index].image = e.target.value
+                      newPosts[index].image = value
                       updateContent(["blog", "posts"], newPosts)
                     }}
+                    fieldId={`post-image-${index}`}
+                    handleImageUpload={handleImageUpload}
+                    uploadingImages={uploadingImages}
                   />
                 </div>
               </div>
@@ -1052,7 +1234,7 @@ function BlogEditor({ content, updateContent, addArrayItem, removeArrayItem }: a
   )
 }
 
-// Contact Editor Component
+// Contact Editor Component (unchanged)
 function ContactEditor({ content, updateContent }: any) {
   return (
     <div className="space-y-6">
