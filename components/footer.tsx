@@ -1,161 +1,72 @@
-"use client"
-
-import { useState, useEffect } from "react"
 import Link from "next/link"
-import { MapPin, Phone, Mail, ArrowRight } from "lucide-react"
-import { useCMS } from "@/hooks/use-cms"
+import { useCMSSection } from "@/hooks/use-cms"
 
 export default function Footer() {
-  const { content } = useCMS()
-  const [mounted, setMounted] = useState(false)
+  const { content: siteContent } = useCMSSection("site")
+  const { content: footerContent } = useCMSSection("footer")
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted || !content) {
-    return null
+  if (!siteContent || !footerContent) {
+    return null // Loading state
   }
 
-  const siteInfo = content.site
-  const siteContact = content.site.contact
+  const currentYear = new Date().getFullYear()
+  const copyright = footerContent.copyright.replace("{year}", currentYear.toString())
 
   return (
-    <footer className="bg-[#0F4C81] text-white">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <img src={siteInfo.logo || "/images/logo-transparent.png"} alt={siteInfo.name} className="h-10 w-auto" />
-              <span className="text-xl font-bold">{siteInfo.name}</span>
+    <footer className="w-full py-12 bg-gray-900 text-white">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8">
+          {/* Logo and Description */}
+          <div className="md:col-span-2">
+            <div className="flex items-center mb-4">
+              <img
+                src={siteContent.logo || "/placeholder.svg"}
+                alt={`${siteContent.name} Logo`}
+                className="h-10 w-auto mr-3"
+              />
+              <span className="text-xl font-bold">{siteContent.name}</span>
             </div>
-            <p className="text-blue-100 leading-relaxed">{siteInfo.description}</p>
-            <div className="flex space-x-4">{/* Social links can be added here */}</div>
+            <p className="text-gray-400 mb-4 max-w-md">{footerContent.description}</p>
+            <p className="text-gray-400 text-sm">{siteContent.tagline}</p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-semibold mb-4 text-[#FFCF40]">{footerContent.quickLinks.title}</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-blue-100 hover:text-white transition-colors flex items-center group">
-                  <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services"
-                  className="text-blue-100 hover:text-white transition-colors flex items-center group"
-                >
-                  <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/why-us"
-                  className="text-blue-100 hover:text-white transition-colors flex items-center group"
-                >
-                  <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Why Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/case-studies"
-                  className="text-blue-100 hover:text-white transition-colors flex items-center group"
-                >
-                  <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Case Studies
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-blue-100 hover:text-white transition-colors flex items-center group">
-                  <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-blue-100 hover:text-white transition-colors flex items-center group"
-                >
-                  <ArrowRight className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Contact
-                </Link>
-              </li>
+              {footerContent.quickLinks.items.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-gray-400 hover:text-white transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Our Services</h3>
-            <ul className="space-y-2">
-              <li>
-                <span className="text-blue-100">Custom Digital Solutions</span>
-              </li>
-              <li>
-                <span className="text-blue-100">Digital Warehouse Management</span>
-              </li>
-              <li>
-                <span className="text-blue-100">IoT Sensors & Tracking</span>
-              </li>
-              <li>
-                <span className="text-blue-100">Logistics Optimization</span>
-              </li>
+            <h3 className="font-semibold mb-4 text-[#FFCF40]">{footerContent.contact.title}</h3>
+            <ul className="space-y-2 text-gray-400">
+              {footerContent.contact.items.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
-          </div>
-
-          {/* Contact Info - Using CMS Data */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-[#FFCF40] mt-1 flex-shrink-0" />
-                <span className="text-blue-100 text-sm whitespace-pre-line">{siteContact.address}</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-[#FFCF40] flex-shrink-0" />
-                <a
-                  href={`tel:${siteContact.phone}`}
-                  className="text-blue-100 hover:text-white transition-colors text-sm"
-                >
-                  {siteContact.phone}
-                </a>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-[#FFCF40] flex-shrink-0" />
-                <a
-                  href={`mailto:${siteContact.email}`}
-                  className="text-blue-100 hover:text-white transition-colors text-sm"
-                >
-                  {siteContact.email}
-                </a>
-              </div>
-            </div>
-            <div className="mt-4">
-              <h4 className="font-medium mb-2">Business Hours</h4>
-              <p className="text-blue-100 text-sm whitespace-pre-line">{siteContact.businessHours}</p>
-            </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-blue-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-blue-100 text-sm">
-              © {new Date().getFullYear()} {siteInfo.name}. All rights reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/privacy" className="text-blue-100 hover:text-white text-sm transition-colors">
-                Privacy Policy
+        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-400 text-sm">{copyright}</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            {footerContent.legal.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
+                {item.label}
               </Link>
-              <Link href="/terms" className="text-blue-100 hover:text-white text-sm transition-colors">
-                Terms of Service
-              </Link>
-            </div>
+            ))}
           </div>
         </div>
       </div>
